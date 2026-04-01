@@ -1,0 +1,128 @@
+.model-card {
+  transition: all 0.3s ease;
+}
+
+.model-card:hover {
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.model-card.active {
+  border-color: #1890ff;
+  background-color: #2a2a3a;
+}
+
+.accelerator-card {
+  transition: all 0.3s ease;
+}
+
+.accelerator-card:hover {
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.accelerator-card.active {
+  border-color: #1890ff;
+  background-color: #2a2a3a;
+}
+
+.capability-card {
+  transition: all 0.3s ease;
+}
+
+.capability-card:hover {
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+.capability-card.active {
+  border-color: #1890ff;
+  background-color: #2a2a3a;
+}
+
+.ant-checkbox-group {
+  width: 100%;
+}
+
+.ant-checkbox-wrapper {
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.ant-checkbox-wrapper:hover {
+  color: #1890ff;
+}
+
+.ant-checkbox-inner {
+  background-color: #1f1f1f;
+  border-color: #434343;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.ant-checkbox-wrapper + .ant-checkbox-wrapper {
+  margin-left: 0;
+}
+
+.selected-row {
+  background-color: #2a2a3a !important;
+}
+
+.selected-row:hover {
+  background-color: #2a2a3a !important;
+}
+
+.ant-table {
+  background-color: #1f1f1f;
+}
+
+.ant-table-thead > tr > th {
+  background-color: #1f1f1f;
+  color: #fff;
+  border-bottom: 1px solid #434343;
+}
+
+.ant-table-tbody > tr > td {
+  background-color: #1f1f1f;
+  color: #fff;
+  border-bottom: 1px solid #434343;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background-color: #262626;
+}
+
+.ant-pagination-item {
+  background-color: #1f1f1f;
+  border-color: #434343;
+}
+
+.ant-pagination-item a {
+  color: #fff;
+}
+
+.ant-pagination-item-active {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.ant-pagination-item-active a {
+  color: #fff;
+}
+
+.ant-pagination-prev,
+.ant-pagination-next {
+  background-color: #1f1f1f;
+  border-color: #434343;
+}
+
+.ant-pagination-prev button,
+.ant-pagination-next button {
+  color: #fff;
+}
+
+.ant-pagination-disabled button {
+  color: #434343;
+}

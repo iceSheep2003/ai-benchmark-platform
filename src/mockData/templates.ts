@@ -1,0 +1,212 @@
+import type { ConfigTemplate } from '../types/config';
+
+export const mockTemplates: ConfigTemplate[] = [
+  {
+    id: 'tpl-001',
+    name: 'LLM-Baseline-H100',
+    description: 'Baseline benchmark configuration for H100 with FP16 precision',
+    tags: ['baseline', 'H100', 'FP16'],
+    createdAt: '2024-03-10T10:00:00Z',
+    updatedAt: '2024-03-15T14:30:00Z',
+    versions: [
+      {
+        versionId: 'ver-001-1',
+        versionNumber: '1.0',
+        content: JSON.stringify({
+          name: 'LLM-Baseline-H100',
+          description: 'Baseline benchmark configuration',
+          model: {
+            name: 'Llama3-8B',
+            precision: 'FP16',
+            maxContextLength: 4096,
+            temperature: 0.7,
+            topP: 0.9,
+          },
+          dataset: {
+            name: 'MMLU',
+            version: 'v2.1',
+            batchSize: 32,
+            shuffle: true,
+          },
+          resources: {
+            cardModel: 'NVIDIA H100',
+            resourceId: 'res-1',
+            gpuCount: 1,
+            memoryLimit: 70,
+            tensorParallel: false,
+          },
+          evaluation: {
+            metrics: ['throughput', 'latency', 'latency_p99'],
+            mode: 'inference',
+            numSamples: 1000,
+          },
+        }, null, 2),
+        format: 'json',
+        changeLog: 'Initial version',
+        author: 'admin',
+        createdAt: '2024-03-10T10:00:00Z',
+      },
+      {
+        versionId: 'ver-001-2',
+        versionNumber: '1.1',
+        content: JSON.stringify({
+          name: 'LLM-Baseline-H100',
+          description: 'Baseline benchmark configuration',
+          model: {
+            name: 'Llama3-8B',
+            precision: 'FP16',
+            maxContextLength: 4096,
+            temperature: 0.7,
+            topP: 0.9,
+          },
+          dataset: {
+            name: 'MMLU',
+            version: 'v2.1',
+            batchSize: 64,
+            shuffle: true,
+          },
+          resources: {
+            cardModel: 'NVIDIA H100',
+            resourceId: 'res-1',
+            gpuCount: 1,
+            memoryLimit: 70,
+            tensorParallel: false,
+          },
+          evaluation: {
+            metrics: ['throughput', 'latency', 'latency_p99', 'memory_usage'],
+            mode: 'inference',
+            numSamples: 1000,
+          },
+        }, null, 2),
+        format: 'json',
+        changeLog: 'Increased batch size from 32 to 64, added memory_usage metric',
+        author: 'admin',
+        createdAt: '2024-03-15T14:30:00Z',
+      },
+    ],
+  },
+  {
+    id: 'tpl-002',
+    name: 'INT8-Optimization-910B',
+    description: 'INT8 quantized model benchmark on Huawei 910B',
+    tags: ['optimization', '910B', 'INT8'],
+    createdAt: '2024-03-12T08:00:00Z',
+    updatedAt: '2024-03-14T16:45:00Z',
+    versions: [
+      {
+        versionId: 'ver-002-1',
+        versionNumber: '1.0',
+        content: JSON.stringify({
+          name: 'INT8-Optimization-910B',
+          description: 'INT8 quantized benchmark',
+          model: {
+            name: 'Llama3-8B',
+            precision: 'INT8',
+            maxContextLength: 8192,
+            temperature: 0.5,
+            topP: 0.85,
+          },
+          dataset: {
+            name: 'GSM8K',
+            version: 'v1.0',
+            batchSize: 128,
+            shuffle: true,
+          },
+          resources: {
+            cardModel: 'Huawei 910B',
+            resourceId: 'res-3',
+            gpuCount: 2,
+            memoryLimit: 60,
+            tensorParallel: true,
+          },
+          evaluation: {
+            metrics: ['throughput', 'latency', 'energy_efficiency'],
+            mode: 'inference',
+            numSamples: 500,
+          },
+        }, null, 2),
+        format: 'json',
+        changeLog: 'Initial version with INT8 quantization',
+        author: 'admin',
+        createdAt: '2024-03-12T08:00:00Z',
+      },
+    ],
+  },
+  {
+    id: 'tpl-003',
+    name: 'Multi-GPU-Training',
+    description: 'Training configuration with tensor parallelism',
+    tags: ['training', 'multi-gpu', 'A100'],
+    createdAt: '2024-03-08T09:00:00Z',
+    updatedAt: '2024-03-13T11:20:00Z',
+    versions: [
+      {
+        versionId: 'ver-003-1',
+        versionNumber: '1.0',
+        content: JSON.stringify({
+          name: 'Multi-GPU-Training',
+          description: 'Multi-GPU training configuration',
+          model: {
+            name: 'Qwen-14B',
+            precision: 'FP16',
+            maxContextLength: 2048,
+            temperature: 0.6,
+            topP: 0.8,
+          },
+          dataset: {
+            name: 'Custom',
+            version: 'v1.0',
+            batchSize: 16,
+            shuffle: true,
+          },
+          resources: {
+            cardModel: 'NVIDIA A100',
+            resourceId: 'res-2',
+            gpuCount: 4,
+            memoryLimit: 75,
+            tensorParallel: true,
+          },
+          evaluation: {
+            metrics: ['accuracy', 'throughput', 'latency'],
+            mode: 'training',
+            numSamples: 0,
+          },
+        }, null, 2),
+        format: 'json',
+        changeLog: 'Initial multi-GPU training setup',
+        author: 'admin',
+        createdAt: '2024-03-08T09:00:00Z',
+      },
+    ],
+  },
+];
+
+export const defaultTemplateContent = JSON.stringify({
+  name: 'New Configuration',
+  description: '',
+  model: {
+    name: 'Llama3-8B',
+    precision: 'FP16',
+    maxContextLength: 4096,
+    temperature: 0.7,
+    topP: 0.9,
+  },
+  dataset: {
+    name: 'MMLU',
+    version: 'v2.1',
+    batchSize: 32,
+    shuffle: true,
+  },
+  resources: {
+    cardModel: 'NVIDIA H100',
+    resourceId: '',
+    gpuCount: 1,
+    memoryLimit: 70,
+    tensorParallel: false,
+  },
+  evaluation: {
+    metrics: ['throughput', 'latency'],
+    mode: 'inference',
+    numSamples: 1000,
+  },
+}, null, 2);
