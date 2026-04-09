@@ -220,7 +220,7 @@ export const TaskCockpit: React.FC<TaskCockpitProps> = ({ taskId }) => {
       );
     }
 
-    const { model, version, capabilities } = selectedTask.llmConfig;
+    const { model, version, capabilities, generatedConfigFile, configGenerationError } = selectedTask.llmConfig;
 
     return (
       <div>
@@ -244,6 +244,20 @@ export const TaskCockpit: React.FC<TaskCockpitProps> = ({ taskId }) => {
             </Descriptions.Item>
             <Descriptions.Item label="任务ID">
               <code style={{ color: '#1890ff' }}>{selectedTask.id}</code>
+            </Descriptions.Item>
+            <Descriptions.Item label="配置文件">
+              {generatedConfigFile ? (
+                <Tag color="cyan">{generatedConfigFile.relativePath}</Tag>
+              ) : (
+                <Tag color="warning">未生成</Tag>
+              )}
+            </Descriptions.Item>
+            <Descriptions.Item label="配置状态">
+              {configGenerationError ? (
+                <Tag color="error">{configGenerationError}</Tag>
+              ) : (
+                <Tag color="success">已就绪</Tag>
+              )}
             </Descriptions.Item>
           </Descriptions>
         </Card>
@@ -329,6 +343,155 @@ export const TaskCockpit: React.FC<TaskCockpitProps> = ({ taskId }) => {
     );
   };
 
+  const renderAcceleratorConfigDetail = () => {
+    if (!selectedTask?.acceleratorConfig) {
+      return (
+        <Empty
+          description="无加速卡配置信息"
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+        />
+      );
+    }
+
+    const {
+      accelerator,
+      tasks,
+      offlineTests,
+      generatedConfigFile,
+      configGenerationError,
+    } = selectedTask.acceleratorConfig;
+
+    return (
+      <div>
+        <Card
+          title={
+            <Space>
+              <ThunderboltOutlined style={{ color: '#faad14' }} />
+              <span>加速卡基本信息</span>
+            </Space>
+          }
+          style={{ marginBottom: 24, background: '#1f1f1f', border: '1px solid #303030' }}
+        >
+          <Descriptions column={3} labelStyle={{ color: '#999' }} contentStyle={{ color: '#fff' }}>
+            <Descriptions.Item label="加速卡型号">
+              <Tag color="geekblue">{accelerator}</Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label="任务ID">
+              <code style={{ color: '#1890ff' }}>{selectedTask.id}</code>
+            </Descriptions.Item>
+            <Descriptions.Item label="测试维度数">
+              <Tag color="blue">{tasks.length}</Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label="配置文件">
+              {generatedConfigFile ? (
+                <Tag color="cyan">{generatedConfigFile.relativePath}</Tag>
+              ) : (
+                <Tag color="warning">未生成</Tag>
+              )}
+            </Descriptions.Item>
+            <Descriptions.Item label="配置状态">
+              {configGenerationError ? (
+                <Tag color="error">{configGenerationError}</Tag>
+              ) : (
+                <Tag color="success">已就绪</Tag>
+              )}
+            </Descriptions.Item>
+            <Descriptions.Item label="线下测试">
+              <Tag color="purple">{offlineTests.length}</Tag>
+            </Descriptions.Item>
+          </Descriptions>
+        </Card>
+
+        <Card
+          title={
+            <Space>
+              <ExperimentOutlined style={{ color: '#52c41a' }} />
+              <span>维度与数据集配置</span>
+            </Space>
+          }
+          style={{ marginBottom: 24, background: '#1f1f1f', border: '1px solid #303030' }}
+        >
+          {tasks.length > 0 ? (
+            <Collapse
+              accordion
+              items={tasks.map((task) => ({
+                key: task.id,
+                label: (
+                  <Space>
+                    <Text strong style={{ color: '#fff' }}>{task.title}</Text>
+                    <Tag color="blue">{task.tests.length} 测试项</Tag>
+                    <Tag color="green">{task.datasets.length} 数据集</Tag>
+                  </Space>
+                ),
+                children: (
+                  <Row gutter={[16, 16]}>
+                    <Col span={12}>
+                      <Card size="small" title="测试项" style={{ background: '#141414', border: '1px solid #303030' }}>
+                        <Space wrap>
+                          {task.tests.map((test) => (
+                            <Tag key={test} color="orange">{test}</Tag>
+                          ))}
+                        </Space>
+                      </Card>
+                    </Col>
+                    <Col span={12}>
+                      <Card size="small" title="数据集" style={{ background: '#141414', border: '1px solid #303030' }}>
+                        <Space wrap>
+                          {task.datasets.map((dataset) => (
+                            <Tag key={dataset} color="green">{dataset}</Tag>
+                          ))}
+                        </Space>
+                      </Card>
+                    </Col>
+                  </Row>
+                ),
+              }))}
+            />
+          ) : (
+            <Empty description="暂无测试维度配置" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          )}
+        </Card>
+
+        <Card
+          title={
+            <Space>
+              <CloudUploadOutlined style={{ color: '#722ed1' }} />
+              <span>线下测试配置</span>
+            </Space>
+          }
+          style={{ background: '#1f1f1f', border: '1px solid #303030' }}
+        >
+          {offlineTests.length > 0 ? (
+            <Space direction="vertical" style={{ width: '100%' }}>
+              {offlineTests.map((test) => (
+                <Card key={test.id} size="small" style={{ background: '#141414', border: '1px solid #303030' }}>
+                  <Space direction="vertical" size={8} style={{ width: '100%' }}>
+                    <Space>
+                      <Tag color={test.enabled ? 'success' : 'default'}>{test.title}</Tag>
+                      <Tag color="blue">子项 {test.subItems.length}</Tag>
+                    </Space>
+                    {test.subItems.map((sub) => (
+                      <div key={sub.value}>
+                        <Text style={{ color: '#999' }}>{sub.label}：</Text>
+                        <Space wrap>
+                          {(sub.selected || []).map((val) => (
+                            <Tag key={`${sub.value}-${val}`} color="purple">{val}</Tag>
+                          ))}
+                        </Space>
+                      </div>
+                    ))}
+                  </Space>
+                </Card>
+              ))}
+            </Space>
+          ) : (
+            <Empty description="未启用线下测试" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          )}
+        </Card>
+      </div>
+    );
+  };
+
   const tabItems = [
     {
       key: 'config-detail',
@@ -338,7 +501,9 @@ export const TaskCockpit: React.FC<TaskCockpitProps> = ({ taskId }) => {
           <span>任务配置详情</span>
         </Space>
       ),
-      children: renderLLMConfigDetail(),
+      children: selectedTask?.type === 'accelerator'
+        ? renderAcceleratorConfigDetail()
+        : renderLLMConfigDetail(),
     },
     {
       key: 'metrics',

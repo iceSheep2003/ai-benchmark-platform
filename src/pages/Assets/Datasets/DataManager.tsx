@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Row, Col, Button, Tag, Table, Input, Select, Space, Modal, message, Tabs } from 'antd';
+import { Card, Row, Col, Button, Tag, Table, Input, Select, Space, Modal, message, Tabs, Image, Spin } from 'antd';
 import {
   CloudUploadOutlined,
   EyeOutlined,
@@ -9,7 +9,7 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 import type { DatasetAsset } from '../../../types';
-import { mockDatasets, mockHuggingFaceDatasets } from '../../../mockData/assetsMock';
+import { getDatasetBasePath, loadDatasetCatalog, loadDatasetPreviewRows } from '../../../services/datasetCatalogService';
 import {
   createTaskFromDataset,
   getRelatedTasks,
@@ -18,11 +18,46 @@ import { useAppStore } from '../../../store/appStore';
 
 const DataManager: React.FC = () => {
   const { setCurrentPage, setSelectedTask } = useAppStore();
+  const [catalogDatasets, setCatalogDatasets] = useState<DatasetAsset[]>([]);
   const [sourceMode, setSourceMode] = useState<'huggingface' | 'custom'>('huggingface');
   const [searchText, setSearchText] = useState('');
   const [selectedDataset, setSelectedDataset] = useState<DatasetAsset | null>(null);
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
   const [uploadModalVisible, setUploadModalVisible] = useState(false);
+  const [previewRows, setPreviewRows] = useState<Record<string, unknown>[]>([]);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewSource, setPreviewSource] = useState<'test' | 'sample' | 'catalog'>('catalog');
+
+  React.useEffect(() => {
+    const load = async () => {
+      try {
+        const datasets = await loadDatasetCatalog();
+        const mapped: DatasetAsset[] = datasets.map((dataset) => {
+          const sizeMB = Math.max(1, Math.round(dataset.sampleCount * 0.004));
+          return {
+            id: dataset.id,
+            name: dataset.name,
+            source: dataset.source === 'open-source' ? 'huggingface' : 'custom',
+            version: dataset.version,
+            rowCount: dataset.sampleCount,
+            sizeMB,
+            previewData: [],
+            usageCount: 0,
+            metadata: {
+              description: `${dataset.name} (${dataset.taskType})`,
+              tags: dataset.tags,
+              language: dataset.languageDistribution,
+              license: dataset.source === 'open-source' ? 'community' : 'internal',
+            },
+          };
+        });
+        setCatalogDatasets(mapped);
+      } catch (error) {
+        console.error('Failed to load dataset catalog:', error);
+      }
+    };
+    void load();
+  }, []);
 
   const handleCreateTask = (dataset: DatasetAsset) => {
     createTaskFromDataset(dataset);
@@ -30,9 +65,24 @@ const DataManager: React.FC = () => {
     message.success(`Creating new task for dataset: ${dataset.name}`);
   };
 
-  const handlePreview = (dataset: DatasetAsset) => {
+  const handlePreview = async (dataset: DatasetAsset) => {
     setSelectedDataset(dataset);
     setPreviewModalVisible(true);
+    setPreviewLoading(true);
+    try {
+      const source = dataset.source === 'huggingface' ? 'open-source' : 'self-built';
+      const result = await loadDatasetPreviewRows(
+        { id: dataset.id, source },
+        dataset.previewData as Record<string, unknown>[],
+      );
+      setPreviewRows(result.rows);
+      setPreviewSource(result.source);
+    } catch {
+      setPreviewRows((dataset.previewData as Record<string, unknown>[]) || []);
+      setPreviewSource('catalog');
+    } finally {
+      setPreviewLoading(false);
+    }
   };
 
   const handleUpload = () => {
@@ -40,7 +90,7 @@ const DataManager: React.FC = () => {
   };
 
   const handleViewRelatedTask = (taskId: string) => {
-    const dataset = mockDatasets.find(d => {
+    const dataset = catalogDatasets.find(d => {
       const relatedTasks = getRelatedTasks(d.id);
       return relatedTasks.includes(taskId);
     });
@@ -68,11 +118,12 @@ const DataManager: React.FC = () => {
     }
   };
 
-  const filteredHuggingFaceDatasets = mockHuggingFaceDatasets.filter(dataset =>
+  const filteredHuggingFaceDatasets = catalogDatasets.filter(dataset =>
+    dataset.source === 'huggingface' &&
     dataset.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const filteredDatasets = mockDatasets.filter(dataset =>
+  const filteredDatasets = catalogDatasets.filter(dataset =>
     dataset.source === 'custom' &&
     dataset.name.toLowerCase().includes(searchText.toLowerCase())
   );
@@ -186,6 +237,42 @@ const DataManager: React.FC = () => {
     if (!selectedDataset) return null;
 
     const relatedTasks = getRelatedTasks(selectedDataset.id);
+    const datasetSource = selectedDataset.source === 'huggingface' ? 'open-source' : 'self-built';
+    const datasetBasePath = getDatasetBasePath({ id: selectedDataset.id, source: datasetSource });
+    const dataSource = previewRows.slice(0, 100).map((row, i) => ({ id: i + 1, ...row }));
+    const resolveImagePath = (value: unknown): string | null => {
+      if (typeof value === 'string' && value.startsWith('image/')) {
+        return `${datasetBasePath}/${value}`;
+      }
+      if (value && typeof value === 'object') {
+        const maybePath = (value as { path?: unknown }).path;
+        if (typeof maybePath === 'string' && maybePath.startsWith('image/')) {
+          return `${datasetBasePath}/${maybePath}`;
+        }
+      }
+      return null;
+    };
+    const columns = Object.keys(dataSource[0] || {}).map((key) => ({
+      title: key,
+      dataIndex: key,
+      key,
+      ellipsis: true,
+      render: (value: unknown) => {
+        const src = resolveImagePath(value);
+        if (src) {
+          return <Image src={src} width={72} height={72} style={{ objectFit: 'cover' }} />;
+        }
+        if (typeof value === 'object' && value !== null) {
+          return <span>{JSON.stringify(value)}</span>;
+        }
+        return <span>{String(value ?? '')}</span>;
+      },
+    }));
+    const sourceLabel: Record<'test' | 'sample' | 'catalog', string> = {
+      test: 'test.jsonl',
+      sample: 'sample.jsonl',
+      catalog: 'catalog previewData',
+    };
 
     return (
       <Modal
@@ -218,6 +305,7 @@ const DataManager: React.FC = () => {
             <Tag color="purple">{selectedDataset.version}</Tag>
             <Tag color="orange">{selectedDataset.rowCount.toLocaleString()} rows</Tag>
             <Tag color="cyan">{selectedDataset.sizeMB} MB</Tag>
+            <Tag color="blue">预览来源: {sourceLabel[previewSource]}</Tag>
           </Space>
         </div>
 
@@ -241,18 +329,15 @@ const DataManager: React.FC = () => {
         )}
 
         <Card title="Data Preview (First 100 rows)" style={{ marginTop: '16px' }}>
-          <Table
-            dataSource={selectedDataset.previewData.slice(0, 100)}
-            columns={Object.keys(selectedDataset.previewData[0] || {}).map(key => ({
-              title: key,
-              dataIndex: key,
-              key,
-              ellipsis: true,
-            }))}
-            pagination={{ pageSize: 10 }}
-            scroll={{ y: 400 }}
-            size="small"
-          />
+          <Spin spinning={previewLoading}>
+            <Table
+              dataSource={dataSource}
+              columns={columns}
+              pagination={{ pageSize: 10 }}
+              scroll={{ y: 400 }}
+              size="small"
+            />
+          </Spin>
         </Card>
 
         {relatedTasks.length > 0 && (

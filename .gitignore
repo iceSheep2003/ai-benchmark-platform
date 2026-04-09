@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local / generated artifacts (do not push — regenerate with scripts)
+.cache/
+generated-configs/
+
+# Dataset bulk: sync scripts + parquet_to_test_jsonl regenerate these
+public/datasets/open-source/
+public/datasets/self-built/
+# Keep only the catalog manifest (small); optional: remove next line to ignore all datasets
+!public/datasets/catalog.json

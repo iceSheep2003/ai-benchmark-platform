@@ -3,6 +3,8 @@ import { Modal, Form, Input, Button, message, Row, Col, Divider, Tag, Space, Ale
 import { ReloadOutlined, LockOutlined } from '@ant-design/icons';
 import { useAppStore } from '../../store/appStore';
 import type { TaskStatus, TaskPriority } from '../../types';
+import { buildOpenCompassLikeConfig } from '../../utils/opencompassConfig';
+import { generateConfigFile } from '../../services/configFileService';
 import { CapabilityModule } from '../Task/CapabilityModule';
 import '../Task/LLMEvaluationConfig.css';
 import type { TestModel } from '../../mockData/testResultMock';
@@ -16,7 +18,12 @@ interface RetestModalProps {
 export const RetestModal: React.FC<RetestModalProps> = ({ visible, model, onClose }) => {
   const { addTask } = useAppStore();
   const [form] = Form.useForm();
-  const [capabilities, setCapabilities] = useState<unknown[]>([]);
+  const [capabilities, setCapabilities] = useState<{
+    id: string;
+    title: string;
+    selectedTests?: string[];
+    selectedDatasets?: string[];
+  }[]>([]);
 
   useEffect(() => {
     if (visible && model) {
@@ -26,7 +33,12 @@ export const RetestModal: React.FC<RetestModalProps> = ({ visible, model, onClos
     }
   }, [visible, model, form]);
 
-  const handleCapabilitiesChange = (newCapabilities: unknown[]) => {
+  const handleCapabilitiesChange = (newCapabilities: {
+    id: string;
+    title: string;
+    selectedTests?: string[];
+    selectedDatasets?: string[];
+  }[]) => {
     setCapabilities(newCapabilities);
   };
 
@@ -39,7 +51,7 @@ export const RetestModal: React.FC<RetestModalProps> = ({ visible, model, onClos
         return;
       }
 
-      const hasSelectedCapability = (capabilities as { selectedTests?: string[] }[]).some(cap => 
+      const hasSelectedCapability = capabilities.some(cap => 
         cap.selectedTests && cap.selectedTests.length > 0
       );
 
@@ -48,23 +60,40 @@ export const RetestModal: React.FC<RetestModalProps> = ({ visible, model, onClos
         return;
       }
 
+      const selectedCapabilities = capabilities
+        .filter(cap => cap.selectedTests && cap.selectedTests.length > 0)
+        .map(cap => ({
+          id: cap.id,
+          title: cap.title || '',
+          tests: cap.selectedTests || [],
+          datasets: cap.selectedDatasets || []
+        }));
+
       const taskData = {
         taskName: values.taskName,
         model: model.name,
         version: model.version,
-        capabilities: (capabilities as { id: string; selectedTests?: string[]; selectedDatasets?: string[] }[])
-          .filter(cap => cap.selectedTests && cap.selectedTests.length > 0)
-          .map(cap => ({
-            id: cap.id,
-            tests: cap.selectedTests,
-            datasets: cap.selectedDatasets || []
-          }))
+        capabilities: selectedCapabilities,
       };
 
       console.log('提交重新测试任务数据:', taskData);
 
+      const taskId = `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const openCompassConfig = buildOpenCompassLikeConfig({
+        taskName: taskData.taskName,
+        model: taskData.model,
+        version: taskData.version,
+        capabilities: taskData.capabilities,
+      });
+      const configWriteResult = await generateConfigFile({
+        taskId,
+        taskName: taskData.taskName,
+        taskType: 'llm',
+        config: openCompassConfig,
+      });
+
       const newTask = {
-        id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: taskId,
         name: taskData.taskName,
         type: 'llm' as const,
         status: 'PENDING' as TaskStatus,
@@ -75,12 +104,10 @@ export const RetestModal: React.FC<RetestModalProps> = ({ visible, model, onClos
         llmConfig: {
           model: taskData.model,
           version: taskData.version,
-          capabilities: taskData.capabilities.map(cap => ({
-            id: cap.id,
-            title: (capabilities as { id: string; title: string }[]).find(c => c.id === cap.id)?.title || '',
-            tests: cap.tests || [],
-            datasets: cap.datasets || []
-          }))
+          capabilities: taskData.capabilities,
+          openCompassConfig,
+          generatedConfigFile: configWriteResult.success ? configWriteResult.file : undefined,
+          configGenerationError: configWriteResult.success ? undefined : configWriteResult.error,
         },
         priority: 'P2' as TaskPriority,
         estimatedStartTime: new Date(Date.now() + Math.random() * 1800000 + 300000).toISOString(),
@@ -88,7 +115,11 @@ export const RetestModal: React.FC<RetestModalProps> = ({ visible, model, onClos
       };
 
       addTask(newTask);
-      message.success('重新测试任务创建成功');
+      if (configWriteResult.success) {
+        message.success('重新测试任务创建成功，配置文件已生成');
+      } else {
+        message.warning(`任务已创建，但配置文件落盘失败：${configWriteResult.error}`);
+      }
       handleClose();
 
     } catch (error) {

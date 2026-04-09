@@ -32,7 +32,7 @@ import {
 } from '@ant-design/icons';
 import type { Dataset, DatasetFilter, DatasetStats } from '../../types/dataset';
 import { TASK_TYPE_LABELS, TASK_TYPE_ICONS, EVALUATION_DIMENSION_LABELS, DATASET_SOURCE_LABELS } from '../../types/dataset';
-import { mockDatasets } from '../../mockData/datasetMock';
+import { loadDatasetCatalog } from '../../services/datasetCatalogService';
 import DatasetDetailDashboard from './DatasetDetailDashboard';
 
 const { Title, Text } = Typography;
@@ -43,6 +43,8 @@ interface DatasetManagementProps {
 }
 
 export const DatasetManagement: React.FC<DatasetManagementProps> = ({ category, source }) => {
+  const [allDatasets, setAllDatasets] = useState<Dataset[]>([]);
+  const [datasetLoadingError, setDatasetLoadingError] = useState<string>('');
   const [filter, setFilter] = useState<DatasetFilter>({});
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedDataset, setSelectedDataset] = useState<Dataset | null>(null);
@@ -51,6 +53,19 @@ export const DatasetManagement: React.FC<DatasetManagementProps> = ({ category, 
   const [versionCompareModalVisible, setVersionCompareModalVisible] = useState(false);
   const [uploadModalVisible, setUploadModalVisible] = useState(false);
   const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
+
+  React.useEffect(() => {
+    const load = async () => {
+      try {
+        const datasets = await loadDatasetCatalog();
+        setAllDatasets(datasets);
+        setDatasetLoadingError('');
+      } catch (error) {
+        setDatasetLoadingError(error instanceof Error ? error.message : '加载数据集目录失败');
+      }
+    };
+    void load();
+  }, []);
 
   const taskTypes = useMemo(() => {
     if (category === 'llm') {
@@ -64,14 +79,14 @@ export const DatasetManagement: React.FC<DatasetManagementProps> = ({ category, 
   const hardwareOptions = ['CUDA', '昇腾', '昆仑芯'];
 
   const datasets = useMemo(() => {
-    return mockDatasets.filter(dataset => {
+    return allDatasets.filter(dataset => {
       const categoryMatch = category === 'llm' 
         ? ['multi-turn-dialogue', 'instruction-following', 'reasoning', 'multilingual-understanding', 'knowledge-application', 'code-understanding'].includes(dataset.taskType)
         : ['training', 'inference', 'matrix-computation'].includes(dataset.taskType);
       const sourceMatch = source ? dataset.source === source : true;
       return categoryMatch && sourceMatch;
     });
-  }, [category, source]);
+  }, [allDatasets, category, source]);
 
   const filteredDatasets = useMemo(() => {
     return datasets.filter(dataset => {
@@ -130,22 +145,24 @@ export const DatasetManagement: React.FC<DatasetManagementProps> = ({ category, 
   };
 
   const handleDownload = (dataset: Dataset) => {
+    const sampleFile = (dataset as Dataset & { files?: { sample?: string } }).files?.sample;
     Modal.confirm({
       title: '下载/调用数据集',
       content: (
         <div>
           <p>数据集名称: {dataset.name}</p>
           <p>版本: v{dataset.version}</p>
+          {sampleFile && <p>样本文件: <code>{sampleFile}</code></p>}
           <p>请选择操作方式:</p>
         </div>
       ),
       okText: '下载',
       cancelText: 'API调用',
       onOk: () => {
-        message.success(`下载 ${dataset.name} 成功`);
+        message.success(sampleFile ? `样本文件路径: ${sampleFile}` : `下载 ${dataset.name} 成功`);
       },
       onCancel: () => {
-        message.success(`API调用 ${dataset.name} 成功`);
+        message.success(`已生成 ${dataset.name} 的API调用请求`);
       },
     });
   };
@@ -234,13 +251,6 @@ export const DatasetManagement: React.FC<DatasetManagementProps> = ({ category, 
                       </Space>
                     </div>
                   )}
-                  {dataset.sampleCount < 1000 && (
-                    <div style={{ marginTop: '8px' }}>
-                      <Tag color="red" style={{ fontSize: '11px' }}>
-                        ⚠️ 样本数量不足1000条
-                      </Tag>
-                    </div>
-                  )}
                 </div>
               }
             />
@@ -284,13 +294,7 @@ export const DatasetManagement: React.FC<DatasetManagementProps> = ({ category, 
         dataIndex: 'sampleCount',
         key: 'sampleCount',
         width: 100,
-        render: (count: number) => (
-          <Tooltip title={count < 1000 ? '样本数量不足1000条，不满足最低要求' : ''}>
-            <span style={{ color: count < 1000 ? '#ff4d4f' : 'inherit' }}>
-              {count.toLocaleString()}
-            </span>
-          </Tooltip>
-        ),
+        render: (count: number) => count.toLocaleString(),
       },
       {
         title: '质量综合评分',
@@ -574,6 +578,16 @@ export const DatasetManagement: React.FC<DatasetManagementProps> = ({ category, 
           </Col>
         </Row>
       </Card>
+
+      {datasetLoadingError && (
+        <Alert
+          type="error"
+          showIcon
+          message="数据集目录加载失败"
+          description={datasetLoadingError}
+          style={{ marginBottom: '24px' }}
+        />
+      )}
 
       {!source && (
         <Card style={{ marginBottom: '24px' }}>
