@@ -166,7 +166,7 @@ export const AcceleratorComparisonManagement: React.FC = () => {
                   title={<span style={{ color: '#8c8c8c' }}>当前筛选结果</span>} 
                   value={filteredResults.length} 
                   suffix="项" 
-                  valueStyle={{ color: '#1890ff' }} 
+                  styles={{ content: { color: '#1890ff' } }} 
                 />
               </Col>
               <Col span={6}>
@@ -174,7 +174,7 @@ export const AcceleratorComparisonManagement: React.FC = () => {
                   title={<span style={{ color: '#8c8c8c' }}>涉及加速卡</span>} 
                   value={stats.involvedCards} 
                   suffix="张" 
-                  valueStyle={{ color: '#52c41a' }} 
+                  styles={{ content: { color: '#52c41a' } }} 
                 />
               </Col>
               <Col span={6}>
@@ -182,7 +182,7 @@ export const AcceleratorComparisonManagement: React.FC = () => {
                   title={<span style={{ color: '#8c8c8c' }}>已收藏</span>} 
                   value={stats.starred} 
                   suffix="项" 
-                  valueStyle={{ color: '#faad14' }} 
+                  styles={{ content: { color: '#faad14' } }} 
                 />
               </Col>
               <Col span={6}>
@@ -190,7 +190,7 @@ export const AcceleratorComparisonManagement: React.FC = () => {
                   title={<span style={{ color: '#8c8c8c' }}>公开对比</span>} 
                   value={stats.shared} 
                   suffix="项" 
-                  valueStyle={{ color: '#722ed1' }} 
+                  styles={{ content: { color: '#722ed1' } }} 
                 />
               </Col>
             </Row>

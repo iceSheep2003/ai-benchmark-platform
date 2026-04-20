@@ -14,7 +14,8 @@ import { acceleratorCards, vendorOptions, memoryTypeOptions } from '../../mockDa
 import AcceleratorReportModal from './AcceleratorReportModal';
 
 interface AcceleratorLeaderboardProps {
-  onCardSelect: (cards: AcceleratorCard[]) => void;
+  onCardSelect?: (cards: AcceleratorCard[]) => void;
+  onViewDetail?: (card: AcceleratorCard) => void;
 }
 
 interface AcceleratorSparklineChartProps {
@@ -112,7 +113,7 @@ const sortByOptions = [
   { label: '性价比', value: 'costEfficiency' },
 ];
 
-export const AcceleratorLeaderboard: React.FC<AcceleratorLeaderboardProps> = ({ onCardSelect }) => {
+export const AcceleratorLeaderboard: React.FC<AcceleratorLeaderboardProps> = ({ onCardSelect, onViewDetail }) => {
   const [vendorFilter, setVendorFilter] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>('overall');
   const [memoryTypeFilter, setMemoryTypeFilter] = useState<string[]>([]);
@@ -348,8 +349,12 @@ export const AcceleratorLeaderboard: React.FC<AcceleratorLeaderboardProps> = ({ 
           size="small"
           icon={<EyeOutlined />}
           onClick={() => {
-            setCurrentCard(record);
-            setReportModalVisible(true);
+            if (onViewDetail) {
+              onViewDetail(record);
+            } else {
+              setCurrentCard(record);
+              setReportModalVisible(true);
+            }
           }}
           disabled={record.status !== 'tested'}
         >
@@ -366,7 +371,7 @@ export const AcceleratorLeaderboard: React.FC<AcceleratorLeaderboardProps> = ({ 
       const selected = filteredAndSortedCards.filter(c => 
         newSelectedRowKeys.includes(c.id)
       );
-      onCardSelect(selected);
+      onCardSelect?.(selected);
     },
     getCheckboxProps: (record: AcceleratorCard) => ({
       disabled: record.status === 'testing',

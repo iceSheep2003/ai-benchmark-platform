@@ -124,7 +124,7 @@ const AcceleratorTaskCenter: React.FC = () => {
         };
         
         return (
-          <Space direction="vertical" size={4} style={{ width: '100%' }}>
+          <Space orientation="vertical" size={4} style={{ width: '100%' }}>
             {tasks.slice(0, 3).map((task, idx) => (
               <div key={idx} style={{ display: 'flex', alignItems: 'center', fontSize: 13 }}>
                 <span style={{ marginRight: 6 }}>{iconMap[task.title] || '📋'}</span>
@@ -168,7 +168,7 @@ const AcceleratorTaskCenter: React.FC = () => {
         };
         
         return (
-          <Space direction="vertical" size={2} style={{ width: '100%' }}>
+          <Space orientation="vertical" size={2} style={{ width: '100%' }}>
             {allTests.slice(0, 4).map((test, idx) => (
               <Tag key={idx} color="blue" style={{ margin: 0, fontSize: 12 }}>
                 {testLabels[test] || test}
@@ -209,7 +209,7 @@ const AcceleratorTaskCenter: React.FC = () => {
         };
         
         return (
-          <Space direction="vertical" size={2} style={{ width: '100%' }}>
+          <Space orientation="vertical" size={2} style={{ width: '100%' }}>
             {allDatasets.slice(0, 3).map((dataset, idx) => (
               <Tag key={idx} color="green" style={{ margin: 0, fontSize: 12 }}>
                 {datasetLabels[dataset] || dataset}
@@ -239,7 +239,7 @@ const AcceleratorTaskCenter: React.FC = () => {
         };
         
         return (
-          <Space direction="vertical" size={2} style={{ width: '100%' }}>
+          <Space orientation="vertical" size={2} style={{ width: '100%' }}>
             {offlineTests.map((test, idx) => (
               <div key={idx} style={{ display: 'flex', alignItems: 'center', fontSize: 12 }}>
                 <span style={{ marginRight: 4 }}>{iconMap[test.title] || '📋'}</span>

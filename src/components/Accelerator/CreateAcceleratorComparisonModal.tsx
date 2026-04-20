@@ -262,7 +262,7 @@ export const CreateAcceleratorComparisonModal: React.FC<CreateAcceleratorCompari
                       <Tag color={vendorColors[card.vendor]} style={{ fontSize: 10 }}>
                         {card.vendor}
                       </Tag>
-                      <Text type="secondary" style={{ fontSize: 10 }}>{card.specs.memory}GB</Text>
+                      <Text type="secondary" style={{ fontSize: 10 }}>{card.memory_gb}GB</Text>
                     </Space>
                     <div style={{ marginTop: 4 }}>
                       <Text style={{ fontSize: 11, color: isSelected ? '#fff' : '#8c8c8c' }}>

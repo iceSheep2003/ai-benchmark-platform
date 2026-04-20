@@ -236,7 +236,7 @@ export const AcceleratorComparisonDetailModal: React.FC<AcceleratorComparisonDet
                     title="最优加速卡"
                     value={comparisonResult?.overallAnalysis.bestCard || '-'}
                     prefix={<TrophyOutlined style={{ color: '#faad14' }} />}
-                    valueStyle={{ color: '#52c41a' }}
+                    styles={{ content: { color: '#52c41a' } }}
                   />
                 </Col>
                 <Col span={8}>
@@ -244,7 +244,7 @@ export const AcceleratorComparisonDetailModal: React.FC<AcceleratorComparisonDet
                     title="相对较弱"
                     value={comparisonResult?.overallAnalysis.worstCard || '-'}
                     prefix={<FallOutlined style={{ color: '#ff4d4f' }} />}
-                    valueStyle={{ color: '#ff4d4f' }}
+                    styles={{ content: { color: '#ff4d4f' } }}
                   />
                 </Col>
                 <Col span={8}>
