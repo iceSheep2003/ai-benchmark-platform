@@ -90,4 +90,21 @@ const configFileWriterPlugin = () => ({
 export default defineConfig({
   plugins: [react(), configFileWriterPlugin()],
   assetsInclude: ['**/*.json'],
+  server: {
+    host: 'localhost',
+    proxy: {
+      '/api/v1/tasks': {
+        target: 'http://127.0.0.1:8711',
+        changeOrigin: true,
+      },
+      '/api/v1/test-cases': {
+        target: 'http://127.0.0.1:8711',
+        changeOrigin: true,
+      },
+      '/api/v1/system': {
+        target: 'http://127.0.0.1:8711',
+        changeOrigin: true,
+      },
+    },
+  },
 });

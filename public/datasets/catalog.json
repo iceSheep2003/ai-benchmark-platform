@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-09T12:37:40.617806",
+  "generatedAt": "2026-04-20T13:29:28.458849",
   "datasets": [
     {
       "id": "mmlu",
@@ -19,12 +19,12 @@
         "PyTorch"
       ],
       "source": "open-source",
-      "updatedAt": "2026-04-09T12:32:26.148536",
-      "createdAt": "2026-04-09T12:32:26.148554",
+      "updatedAt": "2026-04-20T13:29:19.790078",
+      "createdAt": "2026-04-20T13:29:19.790092",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:32:26.148556",
+          "createdAt": "2026-04-20T13:29:19.790094",
           "changes": [
             "初始导入到本地数据集库"
           ]
@@ -37,9 +37,7 @@
       ],
       "files": {
         "sample": "/datasets/open-source/mmlu/sample.jsonl",
-        "full": [
-          "/datasets/open-source/mmlu/raw/parquet/0000.parquet"
-        ]
+        "full": []
       },
       "previewData": [
         {
@@ -243,7 +241,7 @@
           "answer": 1
         }
       ],
-      "downloadMode": "hf_parquet",
+      "downloadMode": "preview_only",
       "downloadStatus": "ok"
     },
     {
@@ -253,7 +251,7 @@
       "taskType": "reasoning",
       "evaluationDimension": "functionality",
       "sampleCount": 1319,
-      "qualityScore": 90,
+      "qualityScore": 65,
       "languageDistribution": "EN",
       "hardwareDependencies": [
         "CUDA",
@@ -264,12 +262,12 @@
         "PyTorch"
       ],
       "source": "open-source",
-      "updatedAt": "2026-04-09T12:32:34.712926",
-      "createdAt": "2026-04-09T12:32:34.712934",
+      "updatedAt": "2026-04-20T13:29:20.998544",
+      "createdAt": "2026-04-20T13:29:20.998557",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:32:34.712936",
+          "createdAt": "2026-04-20T13:29:20.998559",
           "changes": [
             "初始导入到本地数据集库"
           ]
@@ -282,9 +280,7 @@
       ],
       "files": {
         "sample": "/datasets/open-source/gsm8k/sample.jsonl",
-        "full": [
-          "/datasets/open-source/gsm8k/raw/hf"
-        ]
+        "full": []
       },
       "previewData": [
         {
@@ -488,9 +484,9 @@
           "answer": "The total number of units in the building will be 8 units/floor * 15 floors = <<8*15=120>>120 units.\nIf 3/4 of the building is occupied, then the total number of occupied units is 3/4 * 120 units = <<3/4*120=90>>90 units.\nThe total number of unoccupied units is 120 units - 90 units = <<120-90=30>>30 units.\n#### 30"
         }
       ],
-      "downloadMode": "hf_datasets",
-      "downloadStatus": "ok",
-      "downloadError": "hf parquet download failed, fallback to datasets lib: HTTP Error 404: Not Found"
+      "downloadMode": "preview_only_github",
+      "downloadStatus": "fallback",
+      "downloadError": "datasets-server failed, preview fallback to github source: HTTP Error 404: Not Found"
     },
     {
       "id": "boolq",
@@ -498,8 +494,8 @@
       "version": "1.0",
       "taskType": "reasoning",
       "evaluationDimension": "functionality",
-      "sampleCount": 3270,
-      "qualityScore": 90,
+      "sampleCount": 1,
+      "qualityScore": 65,
       "languageDistribution": "EN",
       "hardwareDependencies": [
         "CUDA"
@@ -508,12 +504,12 @@
         "PyTorch"
       ],
       "source": "open-source",
-      "updatedAt": "2026-04-09T12:32:42.906715",
-      "createdAt": "2026-04-09T12:32:42.906725",
+      "updatedAt": "2026-04-20T13:29:22.079871",
+      "createdAt": "2026-04-20T13:29:22.079883",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:32:42.906727",
+          "createdAt": "2026-04-20T13:29:22.079885",
           "changes": [
             "初始导入到本地数据集库"
           ]
@@ -526,215 +522,18 @@
       ],
       "files": {
         "sample": "/datasets/open-source/boolq/sample.jsonl",
-        "full": [
-          "/datasets/open-source/boolq/raw/hf"
-        ]
+        "full": []
       },
       "previewData": [
         {
-          "question": "does ethanol take more energy make that produces",
-          "label": 0
-        },
-        {
-          "question": "is house tax and property tax are same",
-          "label": 1
-        },
-        {
-          "question": "is pain experienced in a missing body part or paralyzed area",
-          "label": 1
-        },
-        {
-          "question": "is harry potter and the escape from gringotts a roller coaster ride",
-          "label": 1
-        },
-        {
-          "question": "is there a difference between hydroxyzine hcl and hydroxyzine pam",
-          "label": 1
-        },
-        {
-          "question": "is barq's root beer a pepsi product",
-          "label": 0
-        },
-        {
-          "question": "can an odd number be divided by an even number",
-          "label": 1
-        },
-        {
-          "question": "is there a word with q without u",
-          "label": 1
-        },
-        {
-          "question": "can u drive in canada with us license",
-          "label": 1
-        },
-        {
-          "question": "is there a play off for third place in the world cup",
-          "label": 1
-        },
-        {
-          "question": "can minors drink with parents in new york",
-          "label": 1
-        },
-        {
-          "question": "is the show bloodline based on a true story",
-          "label": 0
-        },
-        {
-          "question": "is it bad to wash your hair with shower gel",
-          "label": 1
-        },
-        {
-          "question": "is the liver part of the excretory system",
-          "label": 1
-        },
-        {
-          "question": "is fantastic beasts and where to find them a prequel",
-          "label": 1
-        },
-        {
-          "question": "will there be a season 8 of vampire diaries",
-          "label": 1
-        },
-        {
-          "question": "was the movie strangers based on a true story",
-          "label": 1
-        },
-        {
-          "question": "is durham university part of the russell group",
-          "label": 1
-        },
-        {
-          "question": "is the tv show the resident over for the season",
-          "label": 1
-        },
-        {
-          "question": "does magnesium citrate have citric acid in it",
-          "label": 1
-        },
-        {
-          "question": "does p o box come before street address",
-          "label": 0
-        },
-        {
-          "question": "does a spark plug keep an engine running",
-          "label": 1
-        },
-        {
-          "question": "is a cape and a cloak the same",
-          "label": 1
-        },
-        {
-          "question": "does it cost money to renounce us citizenship",
-          "label": 1
-        },
-        {
-          "question": "is a fire 7 the same as a kindle",
-          "label": 1
-        },
-        {
-          "question": "can you drink alcohol with your parents in wisconsin",
-          "label": 1
-        },
-        {
-          "question": "do penguins have feathers arising from the epidermis",
-          "label": 1
-        },
-        {
-          "question": "do you need to break in a car",
-          "label": 0
-        },
-        {
-          "question": "is the enchanted forest in oregon still open",
-          "label": 1
-        },
-        {
-          "question": "is there a golf course at the indy 500",
-          "label": 1
-        },
-        {
-          "question": "does deadpool have a kid in the comics",
-          "label": 1
-        },
-        {
-          "question": "do they still make benson & hedges cigarettes",
-          "label": 1
-        },
-        {
-          "question": "is federal income tax the same as social security",
-          "label": 0
-        },
-        {
-          "question": "is an engine speed sensor the same as a crankshaft sensor",
-          "label": 1
-        },
-        {
-          "question": "is indiana jones temple of doom a prequel",
-          "label": 1
-        },
-        {
-          "question": "is there any next part of avengers infinity war",
-          "label": 1
-        },
-        {
-          "question": "is the toyota highlander on a truck frame",
-          "label": 0
-        },
-        {
-          "question": "is it legal to do a cover of a song",
-          "label": 1
-        },
-        {
-          "question": "can carbon form polar covalent bonds with hydrogen",
-          "label": 0
-        },
-        {
-          "question": "is there a sequel to the movie the golden compass",
-          "label": 0
-        },
-        {
-          "question": "is columbus day a national holiday in the united states",
-          "label": 1
-        },
-        {
-          "question": "are new balance and nike the same company",
-          "label": 0
-        },
-        {
-          "question": "is there an interstate that goes coast to coast",
-          "label": 1
-        },
-        {
-          "question": "is pureed tomatoes the same as tomato sauce",
-          "label": 0
-        },
-        {
-          "question": "can there be a word without a vowel",
-          "label": 1
-        },
-        {
-          "question": "does only the winner get money on tipping point",
-          "label": 1
-        },
-        {
-          "question": "is there such a thing as a turkey vulture",
-          "label": 1
-        },
-        {
-          "question": "has anyone hit a hole in one on a par 5",
-          "label": 1
-        },
-        {
-          "question": "do the jets and giants share a stadium",
-          "label": 1
-        },
-        {
-          "question": "is the us womens soccer team in the world cup",
-          "label": 1
+          "prompt": "fallback sample for boolq",
+          "target": "N/A",
+          "note": "download failed, using fallback sample"
         }
       ],
-      "downloadMode": "hf_datasets",
-      "downloadStatus": "ok",
-      "downloadError": "hf parquet download failed, fallback to datasets lib: HTTP Error 404: Not Found"
+      "downloadMode": "preview_only",
+      "downloadStatus": "fallback",
+      "downloadError": "HTTP Error 404: Not Found; github fallback failed: HTTP Error 404: Not Found"
     },
     {
       "id": "squad",
@@ -743,7 +542,7 @@
       "taskType": "instruction-following",
       "evaluationDimension": "functionality",
       "sampleCount": 10570,
-      "qualityScore": 90,
+      "qualityScore": 65,
       "languageDistribution": "EN",
       "hardwareDependencies": [
         "CUDA"
@@ -753,12 +552,12 @@
         "TensorFlow"
       ],
       "source": "open-source",
-      "updatedAt": "2026-04-09T12:32:50.627356",
-      "createdAt": "2026-04-09T12:32:50.627363",
+      "updatedAt": "2026-04-20T13:29:23.996924",
+      "createdAt": "2026-04-20T13:29:23.996939",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:32:50.627364",
+          "createdAt": "2026-04-20T13:29:23.996941",
           "changes": [
             "初始导入到本地数据集库"
           ]
@@ -771,165 +570,213 @@
       ],
       "files": {
         "sample": "/datasets/open-source/squad/sample.jsonl",
-        "full": [
-          "/datasets/open-source/squad/raw/hf"
-        ]
+        "full": []
       },
       "previewData": [
         {
-          "question": "Which NFL team represented the AFC at Super Bowl 50?"
+          "question": "Which NFL team represented the AFC at Super Bowl 50?",
+          "answer": "Denver Broncos"
         },
         {
-          "question": "Which NFL team represented the NFC at Super Bowl 50?"
+          "question": "Which NFL team represented the NFC at Super Bowl 50?",
+          "answer": "Carolina Panthers"
         },
         {
-          "question": "Where did Super Bowl 50 take place?"
+          "question": "Where did Super Bowl 50 take place?",
+          "answer": "Santa Clara, California"
         },
         {
-          "question": "Which NFL team won Super Bowl 50?"
+          "question": "Which NFL team won Super Bowl 50?",
+          "answer": "Denver Broncos"
         },
         {
-          "question": "What color was used to emphasize the 50th anniversary of the Super Bowl?"
+          "question": "What color was used to emphasize the 50th anniversary of the Super Bowl?",
+          "answer": "gold"
         },
         {
-          "question": "What was the theme of Super Bowl 50?"
+          "question": "What was the theme of Super Bowl 50?",
+          "answer": "\"golden anniversary\""
         },
         {
-          "question": "What day was the game played on?"
+          "question": "What day was the game played on?",
+          "answer": "February 7, 2016"
         },
         {
-          "question": "What is the AFC short for?"
+          "question": "What is the AFC short for?",
+          "answer": "American Football Conference"
         },
         {
-          "question": "What was the theme of Super Bowl 50?"
+          "question": "What was the theme of Super Bowl 50?",
+          "answer": "\"golden anniversary\""
         },
         {
-          "question": "What does AFC stand for?"
+          "question": "What does AFC stand for?",
+          "answer": "American Football Conference"
         },
         {
-          "question": "What day was the Super Bowl played on?"
+          "question": "What day was the Super Bowl played on?",
+          "answer": "February 7, 2016"
         },
         {
-          "question": "Who won Super Bowl 50?"
+          "question": "Who won Super Bowl 50?",
+          "answer": "Denver Broncos"
         },
         {
-          "question": "What venue did Super Bowl 50 take place in?"
+          "question": "What venue did Super Bowl 50 take place in?",
+          "answer": "Levi's Stadium"
         },
         {
-          "question": "What city did Super Bowl 50 take place in?"
+          "question": "What city did Super Bowl 50 take place in?",
+          "answer": "Santa Clara"
         },
         {
-          "question": "If Roman numerals were used, what would Super Bowl 50 have been called?"
+          "question": "If Roman numerals were used, what would Super Bowl 50 have been called?",
+          "answer": "Super Bowl L"
         },
         {
-          "question": "Super Bowl 50 decided the NFL champion for what season?"
+          "question": "Super Bowl 50 decided the NFL champion for what season?",
+          "answer": "2015"
         },
         {
-          "question": "What year did the Denver Broncos secure a Super Bowl title for the third time?"
+          "question": "What year did the Denver Broncos secure a Super Bowl title for the third time?",
+          "answer": "2015"
         },
         {
-          "question": "What city did Super Bowl 50 take place in?"
+          "question": "What city did Super Bowl 50 take place in?",
+          "answer": "Santa Clara"
         },
         {
-          "question": "What stadium did Super Bowl 50 take place in?"
+          "question": "What stadium did Super Bowl 50 take place in?",
+          "answer": "Levi's Stadium"
         },
         {
-          "question": "What was the final score of Super Bowl 50? "
+          "question": "What was the final score of Super Bowl 50? ",
+          "answer": "24–10"
         },
         {
-          "question": "What month, day and year did Super Bowl 50 take place? "
+          "question": "What month, day and year did Super Bowl 50 take place? ",
+          "answer": "February 7, 2016"
         },
         {
-          "question": "What year was Super Bowl 50?"
+          "question": "What year was Super Bowl 50?",
+          "answer": "2015"
         },
         {
-          "question": "What team was the AFC champion?"
+          "question": "What team was the AFC champion?",
+          "answer": "Denver Broncos"
         },
         {
-          "question": "What team was the NFC champion?"
+          "question": "What team was the NFC champion?",
+          "answer": "Carolina Panthers"
         },
         {
-          "question": "Who won Super Bowl 50?"
+          "question": "Who won Super Bowl 50?",
+          "answer": "Denver Broncos"
         },
         {
-          "question": "Super Bowl 50 determined the NFL champion for what season?"
+          "question": "Super Bowl 50 determined the NFL champion for what season?",
+          "answer": "2015"
         },
         {
-          "question": "Which team won Super Bowl 50."
+          "question": "Which team won Super Bowl 50.",
+          "answer": "Denver Broncos"
         },
         {
-          "question": "Where was Super Bowl 50 held?"
+          "question": "Where was Super Bowl 50 held?",
+          "answer": "Santa Clara, California."
         },
         {
-          "question": "The name of the NFL championship game is?"
+          "question": "The name of the NFL championship game is?",
+          "answer": "Super Bowl"
         },
         {
-          "question": "What 2015 NFL team one the AFC playoff?"
+          "question": "What 2015 NFL team one the AFC playoff?",
+          "answer": "Denver Broncos"
         },
         {
-          "question": "Which Carolina Panthers player was named Most Valuable Player?"
+          "question": "Which Carolina Panthers player was named Most Valuable Player?",
+          "answer": "Cam Newton"
         },
         {
-          "question": "How many appearances have the Denver Broncos made in the Super Bowl?"
+          "question": "How many appearances have the Denver Broncos made in the Super Bowl?",
+          "answer": "8"
         },
         {
-          "question": "What year was the Carolina Panthers franchise founded?"
+          "question": "What year was the Carolina Panthers franchise founded?",
+          "answer": "1995"
         },
         {
-          "question": "What team did the Panthers defeat?"
+          "question": "What team did the Panthers defeat?",
+          "answer": "Arizona Cardinals"
         },
         {
-          "question": "Who did the Broncos prevent from going to the Super Bowl?"
+          "question": "Who did the Broncos prevent from going to the Super Bowl?",
+          "answer": "New England Patriots"
         },
         {
-          "question": "Who did the Panthers beat in the NFC Championship Game?"
+          "question": "Who did the Panthers beat in the NFC Championship Game?",
+          "answer": "Arizona Cardinals"
         },
         {
-          "question": "Who lost to the Broncos in the AFC Championship?"
+          "question": "Who lost to the Broncos in the AFC Championship?",
+          "answer": "New England Patriots"
         },
         {
-          "question": "Who were the defending Super Bowl champions?"
+          "question": "Who were the defending Super Bowl champions?",
+          "answer": "New England Patriots"
         },
         {
-          "question": "How many teams have been in the Super Bowl eight times?"
+          "question": "How many teams have been in the Super Bowl eight times?",
+          "answer": "four"
         },
         {
-          "question": "Who was this season's NFL MVP?"
+          "question": "Who was this season's NFL MVP?",
+          "answer": "Cam Newton"
         },
         {
-          "question": "What was the win/loss ratio in 2015 for the Carolina Panthers during their regular season?"
+          "question": "What was the win/loss ratio in 2015 for the Carolina Panthers during their regular season?",
+          "answer": "15–1"
         },
         {
-          "question": "Which Carolina Panthers team member was picked as the team's MVP in 2015? "
+          "question": "Which Carolina Panthers team member was picked as the team's MVP in 2015? ",
+          "answer": "Cam Newton"
         },
         {
-          "question": "What were the win/loss game stats for the Denver Bronco's regular season in 2015?"
+          "question": "What were the win/loss game stats for the Denver Bronco's regular season in 2015?",
+          "answer": "12–4"
         },
         {
-          "question": "How many teams have played in the Super Bowl eight times?"
+          "question": "How many teams have played in the Super Bowl eight times?",
+          "answer": "4"
         },
         {
-          "question": "Which team did not get a chance to defend their Super Bowl XLIX win in Super Bowl 50?"
+          "question": "Which team did not get a chance to defend their Super Bowl XLIX win in Super Bowl 50?",
+          "answer": "New England Patriots"
         },
         {
-          "question": "Who is the quarterback for the Panthers?"
+          "question": "Who is the quarterback for the Panthers?",
+          "answer": "Cam Newton"
         },
         {
-          "question": "Who did Carolina beat in the NFC championship game?"
+          "question": "Who did Carolina beat in the NFC championship game?",
+          "answer": "Arizona Cardinals"
         },
         {
-          "question": "How many times have the Panthers been in the Super Bowl?"
+          "question": "How many times have the Panthers been in the Super Bowl?",
+          "answer": "2"
         },
         {
-          "question": "Who did Denver beat in the AFC championship?"
+          "question": "Who did Denver beat in the AFC championship?",
+          "answer": "New England Patriots"
         },
         {
-          "question": "Who was the Most Valuable Player for the 2015 NFL season?"
+          "question": "Who was the Most Valuable Player for the 2015 NFL season?",
+          "answer": "Cam Newton"
         }
       ],
-      "downloadMode": "hf_datasets",
-      "downloadStatus": "ok",
-      "downloadError": "hf parquet download failed, fallback to datasets lib: HTTP Error 404: Not Found"
+      "downloadMode": "preview_only_github",
+      "downloadStatus": "fallback",
+      "downloadError": "datasets-server failed, preview fallback to github source: HTTP Error 422: Unprocessable Entity"
     },
     {
       "id": "xnli",
@@ -937,8 +784,8 @@
       "version": "1.0",
       "taskType": "multilingual-understanding",
       "evaluationDimension": "functionality",
-      "sampleCount": 2490,
-      "qualityScore": 90,
+      "sampleCount": 1,
+      "qualityScore": 65,
       "languageDistribution": "EN",
       "hardwareDependencies": [
         "CUDA"
@@ -947,12 +794,12 @@
         "PyTorch"
       ],
       "source": "open-source",
-      "updatedAt": "2026-04-09T12:32:59.860229",
-      "createdAt": "2026-04-09T12:32:59.860234",
+      "updatedAt": "2026-04-20T13:29:25.202418",
+      "createdAt": "2026-04-20T13:29:25.202431",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:32:59.860235",
+          "createdAt": "2026-04-20T13:29:25.202433",
           "changes": [
             "初始导入到本地数据集库"
           ]
@@ -965,165 +812,18 @@
       ],
       "files": {
         "sample": "/datasets/open-source/xnli/sample.jsonl",
-        "full": [
-          "/datasets/open-source/xnli/raw/hf"
-        ]
+        "full": []
       },
       "previewData": [
         {
-          "label": 1
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 1
+          "prompt": "fallback sample for xnli",
+          "target": "N/A",
+          "note": "download failed, using fallback sample"
         }
       ],
-      "downloadMode": "hf_datasets",
-      "downloadStatus": "ok",
-      "downloadError": "hf parquet download failed, fallback to datasets lib: HTTP Error 404: Not Found"
+      "downloadMode": "preview_only",
+      "downloadStatus": "fallback",
+      "downloadError": "HTTP Error 404: Not Found; github fallback failed: HTTP Error 404: Not Found"
     },
     {
       "id": "mbpp",
@@ -1131,8 +831,8 @@
       "version": "1.0",
       "taskType": "code-understanding",
       "evaluationDimension": "functionality",
-      "sampleCount": 500,
-      "qualityScore": 90,
+      "sampleCount": 974,
+      "qualityScore": 65,
       "languageDistribution": "EN",
       "hardwareDependencies": [
         "CUDA"
@@ -1141,12 +841,12 @@
         "PyTorch"
       ],
       "source": "open-source",
-      "updatedAt": "2026-04-09T12:33:07.492936",
-      "createdAt": "2026-04-09T12:33:07.492944",
+      "updatedAt": "2026-04-20T13:29:26.334625",
+      "createdAt": "2026-04-20T13:29:26.334637",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:33:07.492945",
+          "createdAt": "2026-04-20T13:29:26.334638",
           "changes": [
             "初始导入到本地数据集库"
           ]
@@ -1159,11 +859,39 @@
       ],
       "files": {
         "sample": "/datasets/open-source/mbpp/sample.jsonl",
-        "full": [
-          "/datasets/open-source/mbpp/raw/hf"
-        ]
+        "full": []
       },
       "previewData": [
+        {
+          "text": "Write a function to find the minimum cost path to reach (m, n) from (0, 0) for the given cost matrix cost[][] and a position (m, n) in cost[][]."
+        },
+        {
+          "text": "Write a function to find the similar elements from the given two tuple lists."
+        },
+        {
+          "text": "Write a python function to identify non-prime numbers."
+        },
+        {
+          "text": "Write a function to find the largest integers from a given list of numbers using heap queue algorithm."
+        },
+        {
+          "text": "Write a function to find the number of ways to fill it with 2 x 1 dominoes for the given 3 x n board."
+        },
+        {
+          "text": "Write a python function to check whether the two numbers differ at one bit position only or not."
+        },
+        {
+          "text": "Write a function to find all words which are at least 4 characters long in a string by using regex."
+        },
+        {
+          "text": "Write a function to find squares of individual elements in a list using lambda function."
+        },
+        {
+          "text": "Write a python function to find the minimum number of rotations required to get the same string."
+        },
+        {
+          "text": "Write a function to get the n smallest items from a dataset."
+        },
         {
           "text": "Write a python function to remove first and last occurrence of a given character from the string."
         },
@@ -1283,41 +1011,11 @@
         },
         {
           "text": "Write a function to find the list with minimum length using lambda function."
-        },
-        {
-          "text": "Write a function to print check if the triangle is equilateral or not."
-        },
-        {
-          "text": "Write a function to caluclate area of a parallelogram."
-        },
-        {
-          "text": "Write a python function to check whether the first and last characters of a given string are equal or not."
-        },
-        {
-          "text": "Write a function to sort the given array by using counting sort."
-        },
-        {
-          "text": "Write a function to find t-nth term of geometric series."
-        },
-        {
-          "text": "Write a python function to check if a given number is one less than twice its reverse."
-        },
-        {
-          "text": "Write a python function to find the largest number that can be formed with the given digits."
-        },
-        {
-          "text": "Write a python function to check whether the given two integers have opposite sign or not."
-        },
-        {
-          "text": "Write a function to find the nth octagonal number."
-        },
-        {
-          "text": "Write a function to find the maximum length of the subsequence with difference between adjacent elements for the given array."
         }
       ],
-      "downloadMode": "hf_datasets",
-      "downloadStatus": "ok",
-      "downloadError": "hf parquet download failed, fallback to datasets lib: HTTP Error 404: Not Found"
+      "downloadMode": "preview_only_github",
+      "downloadStatus": "fallback",
+      "downloadError": "datasets-server failed, preview fallback to github source: HTTP Error 422: Unprocessable Entity"
     },
     {
       "id": "humaneval",
@@ -1326,7 +1024,7 @@
       "taskType": "code-understanding",
       "evaluationDimension": "functionality",
       "sampleCount": 164,
-      "qualityScore": 90,
+      "qualityScore": 65,
       "languageDistribution": "EN",
       "hardwareDependencies": [
         "CUDA"
@@ -1335,12 +1033,12 @@
         "PyTorch"
       ],
       "source": "open-source",
-      "updatedAt": "2026-04-09T12:33:15.459677",
-      "createdAt": "2026-04-09T12:33:15.459682",
+      "updatedAt": "2026-04-20T13:29:27.313440",
+      "createdAt": "2026-04-20T13:29:27.313453",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:33:15.459683",
+          "createdAt": "2026-04-20T13:29:27.313454",
           "changes": [
             "初始导入到本地数据集库"
           ]
@@ -1353,9 +1051,7 @@
       ],
       "files": {
         "sample": "/datasets/open-source/humaneval/sample.jsonl",
-        "full": [
-          "/datasets/open-source/humaneval/raw/hf"
-        ]
+        "full": []
       },
       "previewData": [
         {
@@ -1509,9 +1205,9 @@
           "prompt": "\n\ndef modp(n: int, p: int):\n    \"\"\"Return 2^n modulo p (be aware of numerics).\n    >>> modp(3, 5)\n    3\n    >>> modp(1101, 101)\n    2\n    >>> modp(0, 101)\n    1\n    >>> modp(3, 11)\n    8\n    >>> modp(100, 101)\n    1\n    \"\"\"\n"
         }
       ],
-      "downloadMode": "hf_datasets",
-      "downloadStatus": "ok",
-      "downloadError": "hf parquet download failed, fallback to datasets lib: HTTP Error 404: Not Found"
+      "downloadMode": "preview_only_github",
+      "downloadStatus": "fallback",
+      "downloadError": "datasets-server failed, preview fallback to github source: HTTP Error 422: Unprocessable Entity"
     },
     {
       "id": "mnist",
@@ -1519,8 +1215,8 @@
       "version": "1.0",
       "taskType": "inference",
       "evaluationDimension": "performance",
-      "sampleCount": 10000,
-      "qualityScore": 90,
+      "sampleCount": 1,
+      "qualityScore": 65,
       "languageDistribution": "N/A",
       "hardwareDependencies": [
         "CUDA",
@@ -1532,12 +1228,12 @@
         "TensorFlow"
       ],
       "source": "open-source",
-      "updatedAt": "2026-04-09T12:33:22.864125",
-      "createdAt": "2026-04-09T12:33:22.864129",
+      "updatedAt": "2026-04-20T13:29:27.693598",
+      "createdAt": "2026-04-20T13:29:27.693611",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:33:22.864130",
+          "createdAt": "2026-04-20T13:29:27.693612",
           "changes": [
             "初始导入到本地数据集库"
           ]
@@ -1550,165 +1246,18 @@
       ],
       "files": {
         "sample": "/datasets/open-source/mnist/sample.jsonl",
-        "full": [
-          "/datasets/open-source/mnist/raw/hf"
-        ]
+        "full": []
       },
       "previewData": [
         {
-          "label": 7
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 4
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 4
-        },
-        {
-          "label": 9
-        },
-        {
-          "label": 5
-        },
-        {
-          "label": 9
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 6
-        },
-        {
-          "label": 9
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 5
-        },
-        {
-          "label": 9
-        },
-        {
-          "label": 7
-        },
-        {
-          "label": 3
-        },
-        {
-          "label": 4
-        },
-        {
-          "label": 9
-        },
-        {
-          "label": 6
-        },
-        {
-          "label": 6
-        },
-        {
-          "label": 5
-        },
-        {
-          "label": 4
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 7
-        },
-        {
-          "label": 4
-        },
-        {
-          "label": 0
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 3
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 3
-        },
-        {
-          "label": 4
-        },
-        {
-          "label": 7
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 7
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 7
-        },
-        {
-          "label": 4
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 3
-        },
-        {
-          "label": 5
-        },
-        {
-          "label": 1
-        },
-        {
-          "label": 2
-        },
-        {
-          "label": 4
-        },
-        {
-          "label": 4
+          "prompt": "fallback sample for mnist",
+          "target": "N/A",
+          "note": "download failed, using fallback sample"
         }
       ],
-      "downloadMode": "hf_datasets",
-      "downloadStatus": "ok",
-      "downloadError": "hf parquet download failed, fallback to datasets lib: HTTP Error 404: Not Found"
+      "downloadMode": "preview_only",
+      "downloadStatus": "fallback",
+      "downloadError": "HTTP Error 422: Unprocessable Entity; github fallback failed: github_url is not configured"
     },
     {
       "id": "imagenet",
@@ -1716,8 +1265,8 @@
       "version": "1.0",
       "taskType": "training",
       "evaluationDimension": "performance",
-      "sampleCount": 3572,
-      "qualityScore": 90,
+      "sampleCount": 1,
+      "qualityScore": 65,
       "languageDistribution": "N/A",
       "hardwareDependencies": [
         "CUDA",
@@ -1729,12 +1278,12 @@
         "TensorFlow"
       ],
       "source": "open-source",
-      "updatedAt": "2026-04-09T12:37:40.613333",
-      "createdAt": "2026-04-09T12:37:40.613341",
+      "updatedAt": "2026-04-20T13:29:28.097078",
+      "createdAt": "2026-04-20T13:29:28.097090",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:37:40.613342",
+          "createdAt": "2026-04-20T13:29:28.097091",
           "changes": [
             "初始导入到本地数据集库"
           ]
@@ -1747,164 +1296,18 @@
       ],
       "files": {
         "sample": "/datasets/open-source/imagenet/sample.jsonl",
-        "full": [
-          "/datasets/open-source/imagenet/raw/parquet/validation-00000-of-00014.parquet"
-        ]
+        "full": []
       },
       "previewData": [
         {
-          "label": 91
-        },
-        {
-          "label": 171
-        },
-        {
-          "label": 980
-        },
-        {
-          "label": 218
-        },
-        {
-          "label": 19
-        },
-        {
-          "label": 658
-        },
-        {
-          "label": 549
-        },
-        {
-          "label": 808
-        },
-        {
-          "label": 305
-        },
-        {
-          "label": 416
-        },
-        {
-          "label": 89
-        },
-        {
-          "label": 793
-        },
-        {
-          "label": 712
-        },
-        {
-          "label": 505
-        },
-        {
-          "label": 332
-        },
-        {
-          "label": 575
-        },
-        {
-          "label": 986
-        },
-        {
-          "label": 867
-        },
-        {
-          "label": 116
-        },
-        {
-          "label": 817
-        },
-        {
-          "label": 642
-        },
-        {
-          "label": 327
-        },
-        {
-          "label": 995
-        },
-        {
-          "label": 87
-        },
-        {
-          "label": 965
-        },
-        {
-          "label": 267
-        },
-        {
-          "label": 977
-        },
-        {
-          "label": 989
-        },
-        {
-          "label": 120
-        },
-        {
-          "label": 800
-        },
-        {
-          "label": 905
-        },
-        {
-          "label": 124
-        },
-        {
-          "label": 541
-        },
-        {
-          "label": 661
-        },
-        {
-          "label": 112
-        },
-        {
-          "label": 531
-        },
-        {
-          "label": 251
-        },
-        {
-          "label": 495
-        },
-        {
-          "label": 313
-        },
-        {
-          "label": 784
-        },
-        {
-          "label": 261
-        },
-        {
-          "label": 973
-        },
-        {
-          "label": 725
-        },
-        {
-          "label": 535
-        },
-        {
-          "label": 691
-        },
-        {
-          "label": 70
-        },
-        {
-          "label": 269
-        },
-        {
-          "label": 438
-        },
-        {
-          "label": 558
-        },
-        {
-          "label": 830
+          "prompt": "fallback sample for imagenet",
+          "target": "N/A",
+          "note": "download failed, using fallback sample"
         }
       ],
-      "downloadMode": "hf_hub_single_parquet",
-      "downloadStatus": "ok"
+      "downloadMode": "preview_only",
+      "downloadStatus": "fallback",
+      "downloadError": "HTTP Error 422: Unprocessable Entity; github fallback failed: github_url is not configured"
     },
     {
       "id": "deepspark_multi",
@@ -1925,12 +1328,12 @@
       "source": "self-built",
       "uploadedBy": "Admin User",
       "uploadedByAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
-      "updatedAt": "2026-04-09T12:37:40.614215",
-      "createdAt": "2026-04-09T12:37:40.614221",
+      "updatedAt": "2026-04-20T13:29:28.132866",
+      "createdAt": "2026-04-20T13:29:28.132880",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:37:40.614222",
+          "createdAt": "2026-04-20T13:29:28.132882",
           "changes": [
             "基于当前评测配置初始化数据集"
           ]
@@ -1950,350 +1353,350 @@
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 7624
+          "seed": 9222
         },
         {
           "id": 2,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 7901
+          "seed": 9185
         },
         {
           "id": 3,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 9845
+          "seed": 856
         },
         {
           "id": 4,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 5923
+          "seed": 5353
         },
         {
           "id": 5,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 9050
+          "seed": 2766
         },
         {
           "id": 6,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 8356
+          "seed": 3450
         },
         {
           "id": 7,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 3915
+          "seed": 6566
         },
         {
           "id": 8,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 8978
+          "seed": 3256
         },
         {
           "id": 9,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 3862
+          "seed": 157
         },
         {
           "id": 10,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 7439
+          "seed": 5286
         },
         {
           "id": 11,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 5547
+          "seed": 25
         },
         {
           "id": 12,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 1752
+          "seed": 4176
         },
         {
           "id": 13,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 1591
+          "seed": 4973
         },
         {
           "id": 14,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 3648
+          "seed": 9574
         },
         {
           "id": 15,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 4659
+          "seed": 3369
         },
         {
           "id": 16,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 6766
+          "seed": 1303
         },
         {
           "id": 17,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 6285
+          "seed": 1336
         },
         {
           "id": 18,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 6061
+          "seed": 2646
         },
         {
           "id": 19,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 7448
+          "seed": 1976
         },
         {
           "id": 20,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 6817
+          "seed": 9603
         },
         {
           "id": 21,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 304
+          "seed": 9287
         },
         {
           "id": 22,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 2172
+          "seed": 6026
         },
         {
           "id": 23,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 2548
+          "seed": 7064
         },
         {
           "id": 24,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 2023
+          "seed": 3573
         },
         {
           "id": 25,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 6997
+          "seed": 9838
         },
         {
           "id": 26,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 888
+          "seed": 4441
         },
         {
           "id": 27,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 4261
+          "seed": 6655
         },
         {
           "id": 28,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 7678
+          "seed": 1267
         },
         {
           "id": 29,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 5534
+          "seed": 1124
         },
         {
           "id": 30,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 7872
+          "seed": 1352
         },
         {
           "id": 31,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 1824
+          "seed": 9973
         },
         {
           "id": 32,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 1461
+          "seed": 7765
         },
         {
           "id": 33,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 6969
+          "seed": 7610
         },
         {
           "id": 34,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 2415
+          "seed": 8627
         },
         {
           "id": 35,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 3030
+          "seed": 9003
         },
         {
           "id": 36,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 4206
+          "seed": 1770
         },
         {
           "id": 37,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 4986
+          "seed": 6567
         },
         {
           "id": 38,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 7257
+          "seed": 9887
         },
         {
           "id": 39,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 5475
+          "seed": 7601
         },
         {
           "id": 40,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 8724
+          "seed": 8347
         },
         {
           "id": 41,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 7177
+          "seed": 7220
         },
         {
           "id": 42,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 8108
+          "seed": 322
         },
         {
           "id": 43,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 3582
+          "seed": 5157
         },
         {
           "id": 44,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 1667
+          "seed": 2270
         },
         {
           "id": 45,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 1874
+          "seed": 3179
         },
         {
           "id": 46,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 3698
+          "seed": 7303
         },
         {
           "id": 47,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 723
+          "seed": 6980
         },
         {
           "id": 48,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 5484
+          "seed": 4059
         },
         {
           "id": 49,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 8811
+          "seed": 6029
         },
         {
           "id": 50,
           "task": "deepspark_multi",
           "prompt": "run multi-gpu benchmark",
           "target": "throughput",
-          "seed": 4498
+          "seed": 9786
         }
       ]
     },
@@ -2318,12 +1721,12 @@
       "source": "self-built",
       "uploadedBy": "Developer A",
       "uploadedByAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=DevA",
-      "updatedAt": "2026-04-09T12:37:40.614641",
-      "createdAt": "2026-04-09T12:37:40.614646",
+      "updatedAt": "2026-04-20T13:29:28.175985",
+      "createdAt": "2026-04-20T13:29:28.175991",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:37:40.614646",
+          "createdAt": "2026-04-20T13:29:28.175992",
           "changes": [
             "基于当前评测配置初始化数据集"
           ]
@@ -2343,350 +1746,350 @@
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 7121
+          "seed": 2224
         },
         {
           "id": 2,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 9773
+          "seed": 5695
         },
         {
           "id": 3,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 9193
+          "seed": 1598
         },
         {
           "id": 4,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 8888
+          "seed": 2334
         },
         {
           "id": 5,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 6378
+          "seed": 1373
         },
         {
           "id": 6,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 6242
+          "seed": 8925
         },
         {
           "id": 7,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 4358
+          "seed": 6632
         },
         {
           "id": 8,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 5370
+          "seed": 5047
         },
         {
           "id": 9,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 8801
+          "seed": 4444
         },
         {
           "id": 10,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 6051
+          "seed": 7629
         },
         {
           "id": 11,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 3321
+          "seed": 6665
         },
         {
           "id": 12,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 9882
+          "seed": 44
         },
         {
           "id": 13,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 2422
+          "seed": 6351
         },
         {
           "id": 14,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 9178
+          "seed": 9672
         },
         {
           "id": 15,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 3040
+          "seed": 9051
         },
         {
           "id": 16,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 439
+          "seed": 4310
         },
         {
           "id": 17,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 4845
+          "seed": 2505
         },
         {
           "id": 18,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 5897
+          "seed": 8504
         },
         {
           "id": 19,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 2713
+          "seed": 5024
         },
         {
           "id": 20,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 7780
+          "seed": 2882
         },
         {
           "id": 21,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 7355
+          "seed": 6127
         },
         {
           "id": 22,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 9191
+          "seed": 435
         },
         {
           "id": 23,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 1805
+          "seed": 8104
         },
         {
           "id": 24,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 4842
+          "seed": 6186
         },
         {
           "id": 25,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 3642
+          "seed": 762
         },
         {
           "id": 26,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 1588
+          "seed": 1727
         },
         {
           "id": 27,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 5012
+          "seed": 1879
         },
         {
           "id": 28,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 9298
+          "seed": 4306
         },
         {
           "id": 29,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 516
+          "seed": 2252
         },
         {
           "id": 30,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 5923
+          "seed": 7182
         },
         {
           "id": 31,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 9826
+          "seed": 1513
         },
         {
           "id": 32,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 5450
+          "seed": 8511
         },
         {
           "id": 33,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 1437
+          "seed": 1368
         },
         {
           "id": 34,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 3944
+          "seed": 1257
         },
         {
           "id": 35,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 2323
+          "seed": 2672
         },
         {
           "id": 36,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 5441
+          "seed": 2917
         },
         {
           "id": 37,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 4397
+          "seed": 6557
         },
         {
           "id": 38,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 1256
+          "seed": 4251
         },
         {
           "id": 39,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 2483
+          "seed": 2098
         },
         {
           "id": 40,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 8566
+          "seed": 4214
         },
         {
           "id": 41,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 6438
+          "seed": 1255
         },
         {
           "id": 42,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 2110
+          "seed": 7572
         },
         {
           "id": 43,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 795
+          "seed": 4635
         },
         {
           "id": 44,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 7766
+          "seed": 6649
         },
         {
           "id": 45,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 4614
+          "seed": 7404
         },
         {
           "id": 46,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 5634
+          "seed": 2451
         },
         {
           "id": 47,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 9121
+          "seed": 143
         },
         {
           "id": 48,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 7162
+          "seed": 5566
         },
         {
           "id": 49,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 2380
+          "seed": 6854
         },
         {
           "id": 50,
           "task": "mlperf",
           "prompt": "mlperf_case",
           "target": "latency",
-          "seed": 5880
+          "seed": 3961
         }
       ]
     },
@@ -2709,12 +2112,12 @@
       "source": "self-built",
       "uploadedBy": "Researcher B",
       "uploadedByAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=ResB",
-      "updatedAt": "2026-04-09T12:37:40.615019",
-      "createdAt": "2026-04-09T12:37:40.615022",
+      "updatedAt": "2026-04-20T13:29:28.218025",
+      "createdAt": "2026-04-20T13:29:28.218030",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:37:40.615023",
+          "createdAt": "2026-04-20T13:29:28.218032",
           "changes": [
             "基于当前评测配置初始化数据集"
           ]
@@ -2734,350 +2137,350 @@
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 3411
+          "seed": 4510
         },
         {
           "id": 2,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 9402
+          "seed": 2482
         },
         {
           "id": 3,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 6953
+          "seed": 5040
         },
         {
           "id": 4,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 9547
+          "seed": 2010
         },
         {
           "id": 5,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 8012
+          "seed": 7345
         },
         {
           "id": 6,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 3304
+          "seed": 4679
         },
         {
           "id": 7,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 2596
+          "seed": 5344
         },
         {
           "id": 8,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 4003
+          "seed": 2234
         },
         {
           "id": 9,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 5082
+          "seed": 34
         },
         {
           "id": 10,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 679
+          "seed": 9219
         },
         {
           "id": 11,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 6237
+          "seed": 3986
         },
         {
           "id": 12,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 4629
+          "seed": 6768
         },
         {
           "id": 13,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 7287
+          "seed": 3962
         },
         {
           "id": 14,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 5026
+          "seed": 1635
         },
         {
           "id": 15,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 535
+          "seed": 4993
         },
         {
           "id": 16,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 1306
+          "seed": 9698
         },
         {
           "id": 17,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 7
+          "seed": 6386
         },
         {
           "id": 18,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 8008
+          "seed": 9045
         },
         {
           "id": 19,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 7087
+          "seed": 7919
         },
         {
           "id": 20,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 7897
+          "seed": 1773
         },
         {
           "id": 21,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 2593
+          "seed": 5518
         },
         {
           "id": 22,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 3171
+          "seed": 7194
         },
         {
           "id": 23,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 1072
+          "seed": 50
         },
         {
           "id": 24,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 8729
+          "seed": 215
         },
         {
           "id": 25,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 6700
+          "seed": 844
         },
         {
           "id": 26,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 1662
+          "seed": 1985
         },
         {
           "id": 27,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 7671
+          "seed": 8743
         },
         {
           "id": 28,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 5635
+          "seed": 357
         },
         {
           "id": 29,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 7586
+          "seed": 4680
         },
         {
           "id": 30,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 1625
+          "seed": 6724
         },
         {
           "id": 31,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 6667
+          "seed": 3155
         },
         {
           "id": 32,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 8269
+          "seed": 7997
         },
         {
           "id": 33,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 7629
+          "seed": 4769
         },
         {
           "id": 34,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 9267
+          "seed": 6506
         },
         {
           "id": 35,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 6276
+          "seed": 839
         },
         {
           "id": 36,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 6680
+          "seed": 2635
         },
         {
           "id": 37,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 8530
+          "seed": 2939
         },
         {
           "id": 38,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 8020
+          "seed": 2822
         },
         {
           "id": 39,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 7752
+          "seed": 4624
         },
         {
           "id": 40,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 3953
+          "seed": 4089
         },
         {
           "id": 41,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 3639
+          "seed": 9750
         },
         {
           "id": 42,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 4856
+          "seed": 9623
         },
         {
           "id": 43,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 5987
+          "seed": 9241
         },
         {
           "id": 44,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 2840
+          "seed": 2609
         },
         {
           "id": 45,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 1169
+          "seed": 7523
         },
         {
           "id": 46,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 2218
+          "seed": 2992
         },
         {
           "id": 47,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 7469
+          "seed": 1986
         },
         {
           "id": 48,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 5023
+          "seed": 3109
         },
         {
           "id": 49,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 7519
+          "seed": 6262
         },
         {
           "id": 50,
           "task": "specpower",
           "prompt": "power_profile_case",
           "target": "avg_power",
-          "seed": 3809
+          "seed": 2278
         }
       ]
     },
@@ -3100,12 +2503,12 @@
       "source": "self-built",
       "uploadedBy": "Engineer C",
       "uploadedByAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=EngC",
-      "updatedAt": "2026-04-09T12:37:40.615498",
-      "createdAt": "2026-04-09T12:37:40.615500",
+      "updatedAt": "2026-04-20T13:29:28.255680",
+      "createdAt": "2026-04-20T13:29:28.255685",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:37:40.615501",
+          "createdAt": "2026-04-20T13:29:28.255686",
           "changes": [
             "基于当前评测配置初始化数据集"
           ]
@@ -3125,350 +2528,350 @@
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 6310
+          "seed": 3068
         },
         {
           "id": 2,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 295
+          "seed": 1851
         },
         {
           "id": 3,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 5129
+          "seed": 675
         },
         {
           "id": 4,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 2779
+          "seed": 718
         },
         {
           "id": 5,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 4905
+          "seed": 9603
         },
         {
           "id": 6,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 6045
+          "seed": 7527
         },
         {
           "id": 7,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 1189
+          "seed": 2846
         },
         {
           "id": 8,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 5042
+          "seed": 8829
         },
         {
           "id": 9,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 1120
+          "seed": 5426
         },
         {
           "id": 10,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 494
+          "seed": 7935
         },
         {
           "id": 11,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 4666
+          "seed": 2119
         },
         {
           "id": 12,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 6871
+          "seed": 1593
         },
         {
           "id": 13,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 9251
+          "seed": 1244
         },
         {
           "id": 14,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 7277
+          "seed": 3483
         },
         {
           "id": 15,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 6323
+          "seed": 4900
         },
         {
           "id": 16,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 2377
+          "seed": 8388
         },
         {
           "id": 17,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 8332
+          "seed": 8034
         },
         {
           "id": 18,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 1813
+          "seed": 8107
         },
         {
           "id": 19,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 5969
+          "seed": 3358
         },
         {
           "id": 20,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 2643
+          "seed": 7095
         },
         {
           "id": 21,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 3978
+          "seed": 175
         },
         {
           "id": 22,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 6818
+          "seed": 9260
         },
         {
           "id": 23,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 7364
+          "seed": 1205
         },
         {
           "id": 24,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 6555
+          "seed": 1772
         },
         {
           "id": 25,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 7283
+          "seed": 202
         },
         {
           "id": 26,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 4455
+          "seed": 2317
         },
         {
           "id": 27,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 4635
+          "seed": 9873
         },
         {
           "id": 28,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 8748
+          "seed": 9341
         },
         {
           "id": 29,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 6367
+          "seed": 6322
         },
         {
           "id": 30,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 9853
+          "seed": 5367
         },
         {
           "id": 31,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 1482
+          "seed": 9859
         },
         {
           "id": 32,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 7467
+          "seed": 6396
         },
         {
           "id": 33,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 3606
+          "seed": 2243
         },
         {
           "id": 34,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 8092
+          "seed": 6840
         },
         {
           "id": 35,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 3082
+          "seed": 9886
         },
         {
           "id": 36,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 3691
+          "seed": 7296
         },
         {
           "id": 37,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 6283
+          "seed": 5794
         },
         {
           "id": 38,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 933
+          "seed": 9737
         },
         {
           "id": 39,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 6807
+          "seed": 903
         },
         {
           "id": 40,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 3786
+          "seed": 5099
         },
         {
           "id": 41,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 8234
+          "seed": 3059
         },
         {
           "id": 42,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 3529
+          "seed": 9239
         },
         {
           "id": 43,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 1568
+          "seed": 2143
         },
         {
           "id": 44,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 1811
+          "seed": 2330
         },
         {
           "id": 45,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 5598
+          "seed": 2558
         },
         {
           "id": 46,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 6059
+          "seed": 4028
         },
         {
           "id": 47,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 2102
+          "seed": 2119
         },
         {
           "id": 48,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 6408
+          "seed": 7888
         },
         {
           "id": 49,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 7922
+          "seed": 2285
         },
         {
           "id": 50,
           "task": "deepspark_stability",
           "prompt": "stability_case",
           "target": "pass",
-          "seed": 4123
+          "seed": 6323
         }
       ]
     },
@@ -3492,12 +2895,12 @@
       "source": "self-built",
       "uploadedBy": "Admin User",
       "uploadedByAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
-      "updatedAt": "2026-04-09T12:37:40.615795",
-      "createdAt": "2026-04-09T12:37:40.615798",
+      "updatedAt": "2026-04-20T13:29:28.291736",
+      "createdAt": "2026-04-20T13:29:28.291742",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:37:40.615799",
+          "createdAt": "2026-04-20T13:29:28.291743",
           "changes": [
             "基于当前评测配置初始化数据集"
           ]
@@ -3517,350 +2920,350 @@
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 6449
+          "seed": 6875
         },
         {
           "id": 2,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5991
+          "seed": 298
         },
         {
           "id": 3,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7200
+          "seed": 7463
         },
         {
           "id": 4,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 6800
+          "seed": 7798
         },
         {
           "id": 5,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7524
+          "seed": 8493
         },
         {
           "id": 6,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2555
+          "seed": 4050
         },
         {
           "id": 7,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 3670
+          "seed": 698
         },
         {
           "id": 8,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 416
+          "seed": 3596
         },
         {
           "id": 9,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9079
+          "seed": 953
         },
         {
           "id": 10,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7349
+          "seed": 8725
         },
         {
           "id": 11,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2032
+          "seed": 4365
         },
         {
           "id": 12,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 950
+          "seed": 7770
         },
         {
           "id": 13,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1732
+          "seed": 7916
         },
         {
           "id": 14,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1308
+          "seed": 2581
         },
         {
           "id": 15,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 6390
+          "seed": 7237
         },
         {
           "id": 16,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5362
+          "seed": 9836
         },
         {
           "id": 17,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1951
+          "seed": 7353
         },
         {
           "id": 18,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9882
+          "seed": 4760
         },
         {
           "id": 19,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2461
+          "seed": 8326
         },
         {
           "id": 20,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 701
+          "seed": 917
         },
         {
           "id": 21,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1506
+          "seed": 8081
         },
         {
           "id": 22,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8367
+          "seed": 2629
         },
         {
           "id": 23,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 3372
+          "seed": 6286
         },
         {
           "id": 24,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5577
+          "seed": 8357
         },
         {
           "id": 25,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7519
+          "seed": 1715
         },
         {
           "id": 26,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9642
+          "seed": 5103
         },
         {
           "id": 27,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4451
+          "seed": 1778
         },
         {
           "id": 28,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5075
+          "seed": 8055
         },
         {
           "id": 29,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1414
+          "seed": 592
         },
         {
           "id": 30,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 774
+          "seed": 4524
         },
         {
           "id": 31,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 842
+          "seed": 7577
         },
         {
           "id": 32,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4512
+          "seed": 6934
         },
         {
           "id": 33,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 282
+          "seed": 31
         },
         {
           "id": 34,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2113
+          "seed": 4189
         },
         {
           "id": 35,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9535
+          "seed": 6374
         },
         {
           "id": 36,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4951
+          "seed": 4528
         },
         {
           "id": 37,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9288
+          "seed": 2198
         },
         {
           "id": 38,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4104
+          "seed": 5048
         },
         {
           "id": 39,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8646
+          "seed": 4547
         },
         {
           "id": 40,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5004
+          "seed": 4737
         },
         {
           "id": 41,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1250
+          "seed": 941
         },
         {
           "id": 42,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2887
+          "seed": 5102
         },
         {
           "id": 43,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5513
+          "seed": 4340
         },
         {
           "id": 44,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 3364
+          "seed": 1507
         },
         {
           "id": 45,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 6623
+          "seed": 3133
         },
         {
           "id": 46,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2401
+          "seed": 5076
         },
         {
           "id": 47,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 6821
+          "seed": 5173
         },
         {
           "id": 48,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1128
+          "seed": 1687
         },
         {
           "id": 49,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1091
+          "seed": 9805
         },
         {
           "id": 50,
           "task": "pytorch_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2586
+          "seed": 8181
         }
       ]
     },
@@ -3884,12 +3287,12 @@
       "source": "self-built",
       "uploadedBy": "Developer A",
       "uploadedByAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=DevA",
-      "updatedAt": "2026-04-09T12:37:40.616253",
-      "createdAt": "2026-04-09T12:37:40.616256",
+      "updatedAt": "2026-04-20T13:29:28.329761",
+      "createdAt": "2026-04-20T13:29:28.329764",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:37:40.616257",
+          "createdAt": "2026-04-20T13:29:28.329765",
           "changes": [
             "基于当前评测配置初始化数据集"
           ]
@@ -3909,350 +3312,350 @@
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9255
+          "seed": 8746
         },
         {
           "id": 2,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4736
+          "seed": 3768
         },
         {
           "id": 3,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5661
+          "seed": 5985
         },
         {
           "id": 4,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7661
+          "seed": 3556
         },
         {
           "id": 5,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 766
+          "seed": 7492
         },
         {
           "id": 6,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8203
+          "seed": 7161
         },
         {
           "id": 7,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 3347
+          "seed": 7776
         },
         {
           "id": 8,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7334
+          "seed": 2276
         },
         {
           "id": 9,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5585
+          "seed": 3330
         },
         {
           "id": 10,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9549
+          "seed": 7950
         },
         {
           "id": 11,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8644
+          "seed": 5428
         },
         {
           "id": 12,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4817
+          "seed": 1776
         },
         {
           "id": 13,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4701
+          "seed": 5370
         },
         {
           "id": 14,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5623
+          "seed": 1766
         },
         {
           "id": 15,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 433
+          "seed": 6561
         },
         {
           "id": 16,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5147
+          "seed": 8315
         },
         {
           "id": 17,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 3010
+          "seed": 4086
         },
         {
           "id": 18,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1722
+          "seed": 8272
         },
         {
           "id": 19,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1620
+          "seed": 1870
         },
         {
           "id": 20,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8957
+          "seed": 2841
         },
         {
           "id": 21,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4533
+          "seed": 8516
         },
         {
           "id": 22,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 3368
+          "seed": 7399
         },
         {
           "id": 23,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 3469
+          "seed": 381
         },
         {
           "id": 24,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2882
+          "seed": 6300
         },
         {
           "id": 25,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5685
+          "seed": 358
         },
         {
           "id": 26,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8188
+          "seed": 3608
         },
         {
           "id": 27,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7945
+          "seed": 2379
         },
         {
           "id": 28,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 3324
+          "seed": 2179
         },
         {
           "id": 29,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 920
+          "seed": 7984
         },
         {
           "id": 30,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9963
+          "seed": 8244
         },
         {
           "id": 31,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 6682
+          "seed": 86
         },
         {
           "id": 32,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9851
+          "seed": 5441
         },
         {
           "id": 33,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4176
+          "seed": 1169
         },
         {
           "id": 34,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1457
+          "seed": 4471
         },
         {
           "id": 35,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9798
+          "seed": 2292
         },
         {
           "id": 36,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 6476
+          "seed": 5155
         },
         {
           "id": 37,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 3265
+          "seed": 5126
         },
         {
           "id": 38,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 3567
+          "seed": 5653
         },
         {
           "id": 39,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 599
+          "seed": 3339
         },
         {
           "id": 40,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9349
+          "seed": 4262
         },
         {
           "id": 41,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1921
+          "seed": 2833
         },
         {
           "id": 42,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4967
+          "seed": 9165
         },
         {
           "id": 43,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 6772
+          "seed": 4076
         },
         {
           "id": 44,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4643
+          "seed": 9123
         },
         {
           "id": 45,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5895
+          "seed": 370
         },
         {
           "id": 46,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5761
+          "seed": 8713
         },
         {
           "id": 47,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7024
+          "seed": 1058
         },
         {
           "id": 48,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1628
+          "seed": 6153
         },
         {
           "id": 49,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7971
+          "seed": 1800
         },
         {
           "id": 50,
           "task": "tensorflow_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9579
+          "seed": 9962
         }
       ]
     },
@@ -4274,12 +3677,12 @@
       "source": "self-built",
       "uploadedBy": "Researcher B",
       "uploadedByAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=ResB",
-      "updatedAt": "2026-04-09T12:37:40.616500",
-      "createdAt": "2026-04-09T12:37:40.616501",
+      "updatedAt": "2026-04-20T13:29:28.370962",
+      "createdAt": "2026-04-20T13:29:28.370967",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:37:40.616504",
+          "createdAt": "2026-04-20T13:29:28.370969",
           "changes": [
             "基于当前评测配置初始化数据集"
           ]
@@ -4299,350 +3702,350 @@
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8497
+          "seed": 9451
         },
         {
           "id": 2,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 589
+          "seed": 5196
         },
         {
           "id": 3,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5559
+          "seed": 1815
         },
         {
           "id": 4,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9677
+          "seed": 235
         },
         {
           "id": 5,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 396
+          "seed": 1538
         },
         {
           "id": 6,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9533
+          "seed": 7950
         },
         {
           "id": 7,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7613
+          "seed": 8108
         },
         {
           "id": 8,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2845
+          "seed": 4574
         },
         {
           "id": 9,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 158
+          "seed": 5102
         },
         {
           "id": 10,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8599
+          "seed": 7908
         },
         {
           "id": 11,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 6515
+          "seed": 964
         },
         {
           "id": 12,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 6819
+          "seed": 7693
         },
         {
           "id": 13,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2294
+          "seed": 9931
         },
         {
           "id": 14,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9485
+          "seed": 9140
         },
         {
           "id": 15,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8241
+          "seed": 974
         },
         {
           "id": 16,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1296
+          "seed": 3671
         },
         {
           "id": 17,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8987
+          "seed": 4305
         },
         {
           "id": 18,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 26
+          "seed": 8064
         },
         {
           "id": 19,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4224
+          "seed": 1853
         },
         {
           "id": 20,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8443
+          "seed": 7847
         },
         {
           "id": 21,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8228
+          "seed": 5458
         },
         {
           "id": 22,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2622
+          "seed": 6128
         },
         {
           "id": 23,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2904
+          "seed": 6941
         },
         {
           "id": 24,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9745
+          "seed": 1818
         },
         {
           "id": 25,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7858
+          "seed": 1320
         },
         {
           "id": 26,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7418
+          "seed": 8789
         },
         {
           "id": 27,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2304
+          "seed": 8176
         },
         {
           "id": 28,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 4342
+          "seed": 8636
         },
         {
           "id": 29,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1010
+          "seed": 2643
         },
         {
           "id": 30,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9293
+          "seed": 4183
         },
         {
           "id": 31,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2634
+          "seed": 220
         },
         {
           "id": 32,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8638
+          "seed": 8170
         },
         {
           "id": 33,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8381
+          "seed": 5122
         },
         {
           "id": 34,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9251
+          "seed": 4199
         },
         {
           "id": 35,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2618
+          "seed": 5777
         },
         {
           "id": 36,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8590
+          "seed": 9499
         },
         {
           "id": 37,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 6116
+          "seed": 2079
         },
         {
           "id": 38,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 9642
+          "seed": 9342
         },
         {
           "id": 39,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 457
+          "seed": 2291
         },
         {
           "id": 40,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8136
+          "seed": 4451
         },
         {
           "id": 41,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2244
+          "seed": 4013
         },
         {
           "id": 42,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8568
+          "seed": 6833
         },
         {
           "id": 43,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 5017
+          "seed": 1404
         },
         {
           "id": 44,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 8749
+          "seed": 3078
         },
         {
           "id": 45,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 1314
+          "seed": 7716
         },
         {
           "id": 46,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 721
+          "seed": 4580
         },
         {
           "id": 47,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7256
+          "seed": 8393
         },
         {
           "id": 48,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7593
+          "seed": 452
         },
         {
           "id": 49,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 7327
+          "seed": 3340
         },
         {
           "id": 50,
           "task": "mindspore_compat",
           "prompt": "compat_case",
           "target": "framework_support",
-          "seed": 2962
+          "seed": 8205
         }
       ]
     },
@@ -4666,12 +4069,12 @@
       "source": "self-built",
       "uploadedBy": "Engineer C",
       "uploadedByAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=EngC",
-      "updatedAt": "2026-04-09T12:37:40.617323",
-      "createdAt": "2026-04-09T12:37:40.617325",
+      "updatedAt": "2026-04-20T13:29:28.405749",
+      "createdAt": "2026-04-20T13:29:28.405758",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:37:40.617325",
+          "createdAt": "2026-04-20T13:29:28.405759",
           "changes": [
             "基于当前评测配置初始化数据集"
           ]
@@ -4691,350 +4094,350 @@
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 7259
+          "seed": 1352
         },
         {
           "id": 2,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 7835
+          "seed": 9561
         },
         {
           "id": 3,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 572
+          "seed": 6642
         },
         {
           "id": 4,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 9504
+          "seed": 1201
         },
         {
           "id": 5,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 7050
+          "seed": 6952
         },
         {
           "id": 6,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 221
+          "seed": 5842
         },
         {
           "id": 7,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 2369
+          "seed": 7668
         },
         {
           "id": 8,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 3458
+          "seed": 8384
         },
         {
           "id": 9,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 3551
+          "seed": 6919
         },
         {
           "id": 10,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 1175
+          "seed": 9906
         },
         {
           "id": 11,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 1662
+          "seed": 9780
         },
         {
           "id": 12,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 6185
+          "seed": 2000
         },
         {
           "id": 13,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 3175
+          "seed": 7674
         },
         {
           "id": 14,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 534
+          "seed": 2327
         },
         {
           "id": 15,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 508
+          "seed": 267
         },
         {
           "id": 16,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 1028
+          "seed": 1856
         },
         {
           "id": 17,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 7903
+          "seed": 5828
         },
         {
           "id": 18,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 9621
+          "seed": 8394
         },
         {
           "id": 19,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 3833
+          "seed": 3859
         },
         {
           "id": 20,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 4884
+          "seed": 8249
         },
         {
           "id": 21,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 1378
+          "seed": 8557
         },
         {
           "id": 22,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 2930
+          "seed": 7567
         },
         {
           "id": 23,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 1703
+          "seed": 2547
         },
         {
           "id": 24,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 1106
+          "seed": 3732
         },
         {
           "id": 25,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 4024
+          "seed": 7669
         },
         {
           "id": 26,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 3082
+          "seed": 8845
         },
         {
           "id": 27,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 3444
+          "seed": 5049
         },
         {
           "id": 28,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 6490
+          "seed": 57
         },
         {
           "id": 29,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 83
+          "seed": 6872
         },
         {
           "id": 30,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 7705
+          "seed": 6535
         },
         {
           "id": 31,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 9545
+          "seed": 3001
         },
         {
           "id": 32,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 6279
+          "seed": 9110
         },
         {
           "id": 33,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 4412
+          "seed": 2333
         },
         {
           "id": 34,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 3413
+          "seed": 1422
         },
         {
           "id": 35,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 2583
+          "seed": 9910
         },
         {
           "id": 36,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 272
+          "seed": 2304
         },
         {
           "id": 37,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 9840
+          "seed": 224
         },
         {
           "id": 38,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 7278
+          "seed": 2675
         },
         {
           "id": 39,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 211
+          "seed": 1865
         },
         {
           "id": 40,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 4066
+          "seed": 9395
         },
         {
           "id": 41,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 7945
+          "seed": 688
         },
         {
           "id": 42,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 2547
+          "seed": 3754
         },
         {
           "id": 43,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 3908
+          "seed": 1121
         },
         {
           "id": 44,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 1869
+          "seed": 1517
         },
         {
           "id": 45,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 4916
+          "seed": 3140
         },
         {
           "id": 46,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 1425
+          "seed": 2576
         },
         {
           "id": 47,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 8650
+          "seed": 8463
         },
         {
           "id": 48,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 7819
+          "seed": 6636
         },
         {
           "id": 49,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 2265
+          "seed": 622
         },
         {
           "id": 50,
           "task": "precision_benchmark",
           "prompt": "precision_case",
           "target": "relative_error",
-          "seed": 3726
+          "seed": 8468
         }
       ]
     },
@@ -5058,12 +4461,12 @@
       "source": "self-built",
       "uploadedBy": "Admin User",
       "uploadedByAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
-      "updatedAt": "2026-04-09T12:37:40.617800",
-      "createdAt": "2026-04-09T12:37:40.617801",
+      "updatedAt": "2026-04-20T13:29:28.458824",
+      "createdAt": "2026-04-20T13:29:28.458832",
       "versions": [
         {
           "version": "1.0",
-          "createdAt": "2026-04-09T12:37:40.617801",
+          "createdAt": "2026-04-20T13:29:28.458834",
           "changes": [
             "基于当前评测配置初始化数据集"
           ]
@@ -5083,350 +4486,350 @@
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 9157
+          "seed": 3216
         },
         {
           "id": 2,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 8252
+          "seed": 6842
         },
         {
           "id": 3,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 6589
+          "seed": 7509
         },
         {
           "id": 4,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 9269
+          "seed": 5391
         },
         {
           "id": 5,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 7842
+          "seed": 4768
         },
         {
           "id": 6,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 401
+          "seed": 1225
         },
         {
           "id": 7,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 9068
+          "seed": 3174
         },
         {
           "id": 8,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 4883
+          "seed": 5545
         },
         {
           "id": 9,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 1826
+          "seed": 2217
         },
         {
           "id": 10,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 7905
+          "seed": 8460
         },
         {
           "id": 11,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 6659
+          "seed": 1767
         },
         {
           "id": 12,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 4952
+          "seed": 2600
         },
         {
           "id": 13,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 1584
+          "seed": 5167
         },
         {
           "id": 14,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 9517
+          "seed": 9683
         },
         {
           "id": 15,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 2925
+          "seed": 2322
         },
         {
           "id": 16,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 8062
+          "seed": 9389
         },
         {
           "id": 17,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 3229
+          "seed": 7660
         },
         {
           "id": 18,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 5097
+          "seed": 2252
         },
         {
           "id": 19,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 4315
+          "seed": 6982
         },
         {
           "id": 20,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 7670
+          "seed": 65
         },
         {
           "id": 21,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 8305
+          "seed": 8847
         },
         {
           "id": 22,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 5429
+          "seed": 5019
         },
         {
           "id": 23,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 4634
+          "seed": 5810
         },
         {
           "id": 24,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 6410
+          "seed": 606
         },
         {
           "id": 25,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 6511
+          "seed": 5309
         },
         {
           "id": 26,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 5113
+          "seed": 1572
         },
         {
           "id": 27,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 9237
+          "seed": 1352
         },
         {
           "id": 28,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 913
+          "seed": 9685
         },
         {
           "id": 29,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 9519
+          "seed": 5918
         },
         {
           "id": 30,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 2533
+          "seed": 5480
         },
         {
           "id": 31,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 9716
+          "seed": 4767
         },
         {
           "id": 32,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 8404
+          "seed": 3244
         },
         {
           "id": 33,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 4048
+          "seed": 6329
         },
         {
           "id": 34,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 1414
+          "seed": 3643
         },
         {
           "id": 35,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 3894
+          "seed": 956
         },
         {
           "id": 36,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 8
+          "seed": 9832
         },
         {
           "id": 37,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 7740
+          "seed": 414
         },
         {
           "id": 38,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 9845
+          "seed": 6720
         },
         {
           "id": 39,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 2494
+          "seed": 136
         },
         {
           "id": 40,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 563
+          "seed": 9269
         },
         {
           "id": 41,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 9283
+          "seed": 5322
         },
         {
           "id": 42,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 8782
+          "seed": 6609
         },
         {
           "id": 43,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 1841
+          "seed": 9568
         },
         {
           "id": 44,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 6067
+          "seed": 4166
         },
         {
           "id": 45,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 3209
+          "seed": 391
         },
         {
           "id": 46,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 3335
+          "seed": 7954
         },
         {
           "id": 47,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 2120
+          "seed": 5527
         },
         {
           "id": 48,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 6571
+          "seed": 720
         },
         {
           "id": 49,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 1291
+          "seed": 166
         },
         {
           "id": 50,
           "task": "mlperf_precision",
           "prompt": "precision_case",
           "target": "accuracy",
-          "seed": 3328
+          "seed": 4547
         }
       ]
     }
