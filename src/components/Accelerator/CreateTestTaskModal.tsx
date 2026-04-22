@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Form, Input, InputNumber, Select, Button, message, Spin, Card, Tag, Space, Divider } from 'antd';
-import { testCaseApi, type TestCaseCatalogItem, type TestCategory, type CreateTestRequest } from '../../services/acceleratorTaskService';
+import { Modal, Form, Input, InputNumber, Select, message, Spin, Card, Tag, Space, Divider } from 'antd';
+import {
+  testCaseApi,
+  acceleratorTaskApi,
+  type TestCaseCatalogItem,
+  type TestCategory,
+  type CreateTestRequest,
+  type SshTargetInfo,
+} from '../../services/acceleratorTaskService';
 
 interface Props {
   open: boolean;
@@ -25,10 +32,13 @@ const CreateTestTaskModal: React.FC<Props> = ({ open, category, onClose, onSucce
   const [submitting, setSubmitting] = useState(false);
   const [selectedTestType, setSelectedTestType] = useState<string>('');
   const [selectedItem, setSelectedItem] = useState<TestCaseCatalogItem | null>(null);
+  const [sshTargets, setSshTargets] = useState<SshTargetInfo[]>([]);
+  const execMode = Form.useWatch('execution_mode', form) ?? 'local';
 
   useEffect(() => {
     if (open) {
       setLoading(true);
+      acceleratorTaskApi.listSshTargets().then((r) => setSshTargets(r.data.items)).catch(() => setSshTargets([]));
       testCaseApi
         .getCatalog(category)
         .then((res) => setCatalogItems(res.data.items))
@@ -61,6 +71,7 @@ const CreateTestTaskModal: React.FC<Props> = ({ open, category, onClose, onSucce
 
       if (values.model_path) config.model_path = values.model_path;
 
+      const mode = values.execution_mode as 'local' | 'ssh';
       const req: CreateTestRequest = {
         name: values.name,
         category: (category || selectedItem?.category || 'chip_basic') as TestCategory,
@@ -68,6 +79,10 @@ const CreateTestTaskModal: React.FC<Props> = ({ open, category, onClose, onSucce
         config,
         num_gpus: values.num_gpus || 1,
         description: values.description,
+        execution: {
+          mode,
+          target_id: mode === 'ssh' ? values.ssh_target_id : undefined,
+        },
       };
 
       await testCaseApi.create(req);
@@ -115,7 +130,45 @@ const CreateTestTaskModal: React.FC<Props> = ({ open, category, onClose, onSucce
       destroyOnClose
     >
       <Spin spinning={loading}>
-        <Form form={form} layout="vertical">
+        <Form
+          form={form}
+          layout="vertical"
+          initialValues={{ execution_mode: 'local', num_gpus: 1 }}
+        >
+          <Form.Item name="execution_mode" label="执行位置">
+            <Select
+              options={[
+                { value: 'local', label: '本机（API 服务器）' },
+                { value: 'ssh', label: 'SSH 远程（需远程已部署同仓库）' },
+              ]}
+              onChange={() => form.setFieldsValue({ ssh_target_id: undefined })}
+            />
+          </Form.Item>
+
+          {execMode === 'ssh' && (
+            <Form.Item
+              name="ssh_target_id"
+              label="远程主机"
+              rules={[{ required: true, message: '请选择 SSH 目标' }]}
+            >
+              <Select
+                placeholder="BENCHMARK_SSH_TARGETS"
+                options={sshTargets.map((t) => ({
+                  value: t.id,
+                  label: `${t.id} (${t.user}@${t.host})`,
+                }))}
+                showSearch
+                optionFilterProp="label"
+              />
+            </Form.Item>
+          )}
+
+          {execMode === 'ssh' && sshTargets.length === 0 && (
+            <div style={{ marginBottom: 12, color: '#faad14', fontSize: 12 }}>
+              未配置 SSH 目标，见 backend/ssh-targets.example.json
+            </div>
+          )}
+
           <Form.Item label="选择测试项" required>
             <Select
               placeholder="请选择测试项"
@@ -164,7 +217,7 @@ const CreateTestTaskModal: React.FC<Props> = ({ open, category, onClose, onSucce
             </Form.Item>
           )}
 
-          <Form.Item label="GPU 数量" name="num_gpus" initialValue={1}>
+          <Form.Item label="GPU 数量" name="num_gpus">
             <InputNumber min={1} max={64} style={{ width: '100%' }} />
           </Form.Item>
         </Form>

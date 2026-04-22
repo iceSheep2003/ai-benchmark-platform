@@ -11,6 +11,21 @@ export type TestCategory =
   | 'ecosystem_compat'
   | 'video_codec';
 
+export type ExecutionMode = 'local' | 'ssh';
+
+export interface ExecutionRequest {
+  mode: ExecutionMode;
+  target_id?: string;
+}
+
+export interface SshTargetInfo {
+  id: string;
+  host: string;
+  port: number;
+  user: string;
+  project_root: string;
+}
+
 export interface CreateTaskRequest {
   name: string;
   model_path: string;
@@ -20,6 +35,7 @@ export interface CreateTaskRequest {
   batch_size: number;
   max_out_len: number;
   priority: string;
+  execution?: ExecutionRequest;
 }
 
 export interface TaskMetrics {
@@ -71,6 +87,9 @@ export interface TaskResponse {
   result: TaskResult | null;
   error_message: string | null;
   log_tail: string[];
+  execution_mode?: ExecutionMode;
+  ssh_target_id?: string | null;
+  remote_workspace?: string | null;
 }
 
 export interface GPUInfo {
@@ -110,6 +129,7 @@ export interface CreateTestRequest {
   config: Record<string, unknown>;
   num_gpus: number;
   description?: string;
+  execution?: ExecutionRequest;
 }
 
 export interface TestResultData {
@@ -134,6 +154,8 @@ export interface TestTaskResponse {
   error_message: string | null;
   result: TestResultData | null;
   log_tail: string[];
+  execution_mode?: ExecutionMode;
+  ssh_target_id?: string | null;
 }
 
 export interface CategoryInfo {
@@ -168,8 +190,14 @@ export const acceleratorTaskApi = {
     });
   },
 
-  getSystemInfo() {
-    return api.get<SystemInfo>('/system/gpu-info');
+  getSystemInfo(targetId?: string) {
+    return api.get<SystemInfo>('/system/gpu-info', {
+      params: targetId ? { target_id: targetId } : undefined,
+    });
+  },
+
+  listSshTargets() {
+    return api.get<{ items: SshTargetInfo[] }>('/system/ssh-targets');
   },
 
   healthCheck() {

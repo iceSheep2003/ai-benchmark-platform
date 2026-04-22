@@ -1,0 +1,12 @@
+[
+  {
+    "id": "lab-gpu-1",
+    "host": "192.168.1.100",
+    "port": 22,
+    "user": "ubuntu",
+    "identity_file": "/Users/you/.ssh/id_ed25519",
+    "project_root": "/home/ubuntu/demo",
+    "opencompass_root": "/home/ubuntu/demo/opencompass",
+    "python_executable": "python3"
+  }
+]

@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Optional
 from uuid import uuid4
 
+from ..schemas.execution import ExecutionMode
 from ..schemas.task import (
     AcceleratorBackend,
     AcceleratorTaskCreate,
@@ -24,6 +25,16 @@ def create_task(req: AcceleratorTaskCreate) -> TaskResponse:
     now = datetime.utcnow()
     work_dir = req.work_dir or f"outputs/accelerator/{task_id}"
 
+    mode = req.execution.mode
+    ssh_tid = req.execution.target_id if mode == ExecutionMode.SSH else None
+    remote_ws: Optional[str] = None
+    if mode == ExecutionMode.SSH and ssh_tid:
+        from .ssh_config import get_target
+
+        tgt = get_target(ssh_tid)
+        if tgt:
+            remote_ws = f"{tgt.project_root.rstrip('/')}/outputs/accelerator/{task_id}"
+
     task = TaskResponse(
         id=task_id,
         name=req.name,
@@ -37,6 +48,9 @@ def create_task(req: AcceleratorTaskCreate) -> TaskResponse:
         max_out_len=req.max_out_len,
         work_dir=work_dir,
         created_at=now,
+        execution_mode=mode,
+        ssh_target_id=ssh_tid,
+        remote_workspace=remote_ws,
     )
     with _lock:
         _tasks[task_id] = task

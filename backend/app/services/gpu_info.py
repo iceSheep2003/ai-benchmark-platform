@@ -3,9 +3,98 @@ from __future__ import annotations
 import os
 import subprocess
 import platform
-from typing import Optional
 
 from ..schemas.task import GPUInfo, SystemInfoResponse
+from .ssh_config import SshTarget
+
+
+def query_gpu_info_ssh_target(target: SshTarget) -> SystemInfoResponse:
+    """Run nvidia-smi on a remote host via SSH (same query shape as local)."""
+    cmd = [
+        "ssh",
+        "-p",
+        str(target.port),
+        "-o",
+        "StrictHostKeyChecking=accept-new",
+    ]
+    if target.identity_file:
+        cmd.extend(["-i", target.identity_file, "-o", "BatchMode=yes"])
+    cmd.append(f"{target.user}@{target.host}")
+    cmd.extend(
+        [
+            "nvidia-smi",
+            "--query-gpu=index,name,memory.total,memory.used,memory.free,utilization.gpu,temperature.gpu,power.draw",
+            "--format=csv,noheader,nounits",
+        ]
+    )
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        if result.returncode != 0:
+            return _remote_fallback(target.host, result.stderr or result.stdout)
+    except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+        return _remote_fallback(target.host, str(e))
+
+    gpus = _parse_nvidia_smi_lines(result.stdout)
+    driver_version, cuda_version = "N/A", "N/A"
+    for g in gpus:
+        g.driver_version = driver_version
+        g.cuda_version = cuda_version
+    total_mem = sum(g.memory_total_mb for g in gpus)
+    return SystemInfoResponse(
+        gpus=gpus,
+        gpu_count=len(gpus),
+        total_gpu_memory_mb=total_mem,
+        cpu_count=1,
+        hostname=f"{target.host} (ssh:{target.id})",
+    )
+
+
+def _remote_fallback(host: str, err: str) -> SystemInfoResponse:
+    return SystemInfoResponse(
+        gpus=[
+            GPUInfo(
+                index=0,
+                name=f"Remote {host} (nvidia-smi failed)",
+                memory_total_mb=0,
+                memory_used_mb=0,
+                memory_free_mb=0,
+                utilization_pct=0,
+                temperature_celsius=0,
+                power_watts=0,
+                driver_version="N/A",
+                cuda_version="N/A",
+            )
+        ],
+        gpu_count=0,
+        total_gpu_memory_mb=0,
+        cpu_count=1,
+        hostname=f"{host} ({err[:80]})",
+    )
+
+
+def _parse_nvidia_smi_lines(stdout: str) -> list[GPUInfo]:
+    gpus: list[GPUInfo] = []
+    for line in stdout.strip().split("\n"):
+        if not line.strip():
+            continue
+        parts = [p.strip() for p in line.split(",")]
+        if len(parts) < 8:
+            continue
+        gpus.append(
+            GPUInfo(
+                index=int(parts[0]),
+                name=parts[1],
+                memory_total_mb=float(parts[2]),
+                memory_used_mb=float(parts[3]),
+                memory_free_mb=float(parts[4]),
+                utilization_pct=float(parts[5]),
+                temperature_celsius=float(parts[6]),
+                power_watts=float(parts[7]) if parts[7] not in ("[N/A]", "N/A") else 0.0,
+                driver_version="",
+                cuda_version="",
+            )
+        )
+    return gpus if gpus else _fallback_gpu_info()
 
 
 def query_gpu_info() -> SystemInfoResponse:
@@ -42,28 +131,7 @@ def _parse_nvidia_smi() -> list[GPUInfo]:
     except (FileNotFoundError, subprocess.TimeoutExpired):
         return _fallback_gpu_info()
 
-    gpus: list[GPUInfo] = []
-    for line in result.stdout.strip().split("\n"):
-        if not line.strip():
-            continue
-        parts = [p.strip() for p in line.split(",")]
-        if len(parts) < 8:
-            continue
-        gpus.append(
-            GPUInfo(
-                index=int(parts[0]),
-                name=parts[1],
-                memory_total_mb=float(parts[2]),
-                memory_used_mb=float(parts[3]),
-                memory_free_mb=float(parts[4]),
-                utilization_pct=float(parts[5]),
-                temperature_celsius=float(parts[6]),
-                power_watts=float(parts[7]) if parts[7] not in ("[N/A]", "N/A") else 0.0,
-                driver_version="",
-                cuda_version="",
-            )
-        )
-    return gpus if gpus else _fallback_gpu_info()
+    return _parse_nvidia_smi_lines(result.stdout)
 
 
 def _get_driver_cuda_version() -> tuple[str, str]:

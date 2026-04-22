@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Any, Optional
 from uuid import uuid4
 
+from ..schemas.execution import ExecutionMode
 from ..schemas.task import TaskStatus
 from ..schemas.test_case import AcceleratorTestCreate, AcceleratorTestResult, TestCategory
 
@@ -16,6 +17,7 @@ class TestTask:
         "id", "name", "category", "test_type", "config", "num_gpus",
         "description", "status", "created_at", "started_at", "completed_at",
         "error_message", "result", "log_tail",
+        "execution_mode", "ssh_target_id",
     )
 
     def __init__(self, *, task_id: str, req: AcceleratorTestCreate):
@@ -26,6 +28,10 @@ class TestTask:
         self.config = req.config
         self.num_gpus = req.num_gpus
         self.description = req.description
+        self.execution_mode: ExecutionMode = req.execution.mode
+        self.ssh_target_id: Optional[str] = (
+            req.execution.target_id if req.execution.mode == ExecutionMode.SSH else None
+        )
         self.status: TaskStatus = TaskStatus.PENDING
         self.created_at: datetime = datetime.utcnow()
         self.started_at: Optional[datetime] = None
@@ -50,6 +56,8 @@ class TestTask:
             "error_message": self.error_message,
             "result": self.result.model_dump() if self.result else None,
             "log_tail": self.log_tail[-100:],
+            "execution_mode": self.execution_mode.value,
+            "ssh_target_id": self.ssh_target_id,
         }
 
 

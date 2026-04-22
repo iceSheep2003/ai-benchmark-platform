@@ -4,6 +4,7 @@ from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
 
+from ..schemas.execution import ExecutionMode
 from ..schemas.task import (
     AcceleratorTaskCreate,
     TaskListResponse,
@@ -12,12 +13,24 @@ from ..schemas.task import (
 )
 from ..services import task_store
 from ..services.opencompass_runner import launch_task
+from ..services.ssh_config import get_target
 
 router = APIRouter(prefix="/api/v1/tasks", tags=["tasks"])
 
 
 @router.post("", response_model=TaskResponse, status_code=201)
 def create_task(req: AcceleratorTaskCreate):
+    if req.execution.mode == ExecutionMode.SSH:
+        if not req.execution.target_id:
+            raise HTTPException(
+                status_code=400,
+                detail="execution.target_id is required when execution.mode is ssh",
+            )
+        if not get_target(req.execution.target_id):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unknown SSH target id: {req.execution.target_id}. Configure BENCHMARK_SSH_TARGETS.",
+            )
     task = task_store.create_task(req)
     launch_task(task)
     return task

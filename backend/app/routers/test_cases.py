@@ -6,6 +6,7 @@ from typing import Any, Optional
 
 from fastapi import APIRouter, HTTPException, Query
 
+from ..schemas.execution import ExecutionMode
 from ..schemas.task import TaskStatus
 from ..schemas.test_case import (
     AcceleratorTestCreate,
@@ -14,6 +15,7 @@ from ..schemas.test_case import (
     TEST_CASE_CATALOG,
 )
 from ..services import test_store
+from ..services.ssh_config import get_target
 from ..services.test_runners.base import RunnerRegistry
 
 from ..services.test_runners import chip_basic_runner  # noqa: F401 – register
@@ -48,6 +50,18 @@ def get_categories():
 
 @router.post("", status_code=201)
 def create_test(req: AcceleratorTestCreate):
+    if req.execution.mode == ExecutionMode.SSH:
+        if not req.execution.target_id:
+            raise HTTPException(
+                status_code=400,
+                detail="execution.target_id is required when execution.mode is ssh",
+            )
+        if not get_target(req.execution.target_id):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unknown SSH target id: {req.execution.target_id}. Configure BENCHMARK_SSH_TARGETS.",
+            )
+
     task = test_store.create_test_task(req)
 
     t = threading.Thread(target=_execute_test, args=(task.id,), daemon=True)
@@ -103,6 +117,17 @@ def get_test_logs(task_id: str, tail: int = Query(100, ge=1, le=1000)):
 def _execute_test(task_id: str) -> None:
     task = test_store.get_test_task(task_id)
     if not task:
+        return
+
+    if task.execution_mode == ExecutionMode.SSH:
+        from ..services.ssh_runner import run_test_case_via_ssh
+
+        test_store.update_test_task_status(task_id, TaskStatus.RUNNING)
+        test_store.append_test_log(
+            task_id,
+            [f"Starting test (SSH): {task.category.value}/{task.test_type} target={task.ssh_target_id}"],
+        )
+        run_test_case_via_ssh(task_id)
         return
 
     test_store.update_test_task_status(task_id, TaskStatus.RUNNING)

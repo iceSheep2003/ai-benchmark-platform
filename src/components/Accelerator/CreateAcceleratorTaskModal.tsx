@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Select, InputNumber, message, Space, Tag, Card, Row, Col, Statistic } from 'antd';
 import { ThunderboltOutlined, CloudServerOutlined } from '@ant-design/icons';
-import { acceleratorTaskApi, type SystemInfo, type CreateTaskRequest } from '../../services/acceleratorTaskService';
+import {
+  acceleratorTaskApi,
+  type SystemInfo,
+  type CreateTaskRequest,
+  type SshTargetInfo,
+} from '../../services/acceleratorTaskService';
 
 interface Props {
   open: boolean;
@@ -38,10 +43,16 @@ const CreateAcceleratorTaskModal: React.FC<Props> = ({ open, onClose, onSuccess 
   const [loading, setLoading] = useState(false);
   const [systemInfo, setSystemInfo] = useState<SystemInfo | null>(null);
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
+  const [sshTargets, setSshTargets] = useState<SshTargetInfo[]>([]);
 
   useEffect(() => {
     if (open) {
-      acceleratorTaskApi.getSystemInfo()
+      acceleratorTaskApi
+        .listSshTargets()
+        .then((r) => setSshTargets(r.data.items))
+        .catch(() => setSshTargets([]));
+      acceleratorTaskApi
+        .getSystemInfo()
         .then((res) => {
           setSystemInfo(res.data);
           setBackendConnected(true);
@@ -52,11 +63,21 @@ const CreateAcceleratorTaskModal: React.FC<Props> = ({ open, onClose, onSuccess 
     }
   }, [open]);
 
+  const execMode = Form.useWatch('execution_mode', form) ?? 'local';
+
+  useEffect(() => {
+    if (!open) return;
+    if (execMode !== 'ssh') {
+      acceleratorTaskApi.getSystemInfo().then((r) => setSystemInfo(r.data)).catch(() => {});
+    }
+  }, [open, execMode]);
+
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
       setLoading(true);
 
+      const mode = values.execution_mode as 'local' | 'ssh';
       const req: CreateTaskRequest = {
         name: values.name,
         model_path: values.model_path,
@@ -66,6 +87,10 @@ const CreateAcceleratorTaskModal: React.FC<Props> = ({ open, onClose, onSuccess 
         batch_size: values.batch_size,
         max_out_len: values.max_out_len,
         priority: values.priority,
+        execution: {
+          mode,
+          target_id: mode === 'ssh' ? values.ssh_target_id : undefined,
+        },
       };
 
       const res = await acceleratorTaskApi.create(req);
@@ -151,8 +176,48 @@ const CreateAcceleratorTaskModal: React.FC<Props> = ({ open, onClose, onSuccess 
           batch_size: 8,
           max_out_len: 256,
           priority: 'P2',
+          execution_mode: 'local',
         }}
       >
+        <Form.Item name="execution_mode" label="执行位置">
+          <Select
+            options={[
+              { value: 'local', label: '本机（运行后端的机器）' },
+              { value: 'ssh', label: 'SSH 远程主机' },
+            ]}
+            onChange={() => form.setFieldsValue({ ssh_target_id: undefined })}
+          />
+        </Form.Item>
+
+        {execMode === 'ssh' && (
+          <Form.Item
+            name="ssh_target_id"
+            label="远程主机"
+            rules={[{ required: true, message: '请选择已配置的 SSH 目标' }]}
+          >
+            <Select
+              placeholder="从 BENCHMARK_SSH_TARGETS 加载"
+              options={sshTargets.map((t) => ({
+                value: t.id,
+                label: `${t.id} (${t.user}@${t.host}:${t.port})`,
+              }))}
+              showSearch
+              optionFilterProp="label"
+              onChange={() => {
+                const tid = form.getFieldValue('ssh_target_id') as string | undefined;
+                if (tid) acceleratorTaskApi.getSystemInfo(tid).then((r) => setSystemInfo(r.data));
+              }}
+            />
+          </Form.Item>
+        )}
+
+        {execMode === 'ssh' && sshTargets.length === 0 && (
+          <div style={{ marginBottom: 12, color: '#faad14', fontSize: 13 }}>
+            未配置 SSH 目标：在后端设置环境变量 BENCHMARK_SSH_TARGETS（JSON）或 BENCHMARK_SSH_TARGETS_FILE（文件路径），参考
+            backend/ssh-targets.example.json
+          </div>
+        )}
+
         <Form.Item
           name="name"
           label="任务名称"

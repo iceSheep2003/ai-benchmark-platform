@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import shlex
 import subprocess
 import sys
 import threading
@@ -11,6 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+from ..schemas.execution import ExecutionMode
 from ..schemas.task import (
     AcceleratorBackend,
     DatasetScore,
@@ -36,9 +38,19 @@ def launch_task(task: TaskResponse) -> None:
     t.start()
 
 
+def _opencompass_work_dir(task: TaskResponse) -> str:
+    if task.execution_mode == ExecutionMode.SSH and task.remote_workspace:
+        return task.remote_workspace
+    return task.work_dir
+
+
 def _run_task(task_id: str) -> None:
     task = task_store.get_task(task_id)
     if not task:
+        return
+
+    if task.execution_mode == ExecutionMode.SSH:
+        _run_task_ssh(task_id)
         return
 
     task_store.update_task_status(task_id, TaskStatus.RUNNING)
@@ -68,6 +80,105 @@ def _run_task(task_id: str) -> None:
 
     except Exception as e:
         logger.exception("Task %s failed", task_id)
+        task_store.update_task_status(task_id, TaskStatus.FAILED, error_message=str(e))
+        task_store.append_log_lines(task_id, [f"[{_ts()}] Exception: {e}"])
+
+
+def _run_task_ssh(task_id: str) -> None:
+    from .ssh_config import get_target
+    from .ssh_runner import run_opencompass_ssh_stream, scp_push, ssh_run_bash
+
+    task = task_store.get_task(task_id)
+    if not task or not task.ssh_target_id or not task.remote_workspace:
+        return
+
+    target = get_target(task.ssh_target_id)
+    if not target:
+        task_store.update_task_status(task_id, TaskStatus.FAILED, error_message="ssh target missing")
+        return
+
+    oc_remote = target.oc_root()
+    task_store.update_task_status(task_id, TaskStatus.RUNNING)
+    task_store.append_log_lines(
+        task_id,
+        [
+            f"[{_ts()}] Task started (SSH target={target.id}, host={target.host})",
+            f"[{_ts()}] remote_workspace={task.remote_workspace}",
+        ],
+    )
+
+    try:
+        local_root = Path(task.work_dir)
+        local_root.mkdir(parents=True, exist_ok=True)
+        config_path = _generate_config(task)
+        task_store.append_log_lines(task_id, [f"[{_ts()}] Config generated locally: {config_path}"])
+
+        rw = task.remote_workspace
+        mkdir_line = f"mkdir -p {shlex.quote(rw)}/configs {shlex.quote(rw)}/logs"
+        r0 = ssh_run_bash(target, mkdir_line)
+        if r0.returncode != 0:
+            raise RuntimeError(f"remote mkdir: {r0.stderr or r0.stdout}")
+
+        remote_cfg = f"{rw}/configs/{task.id}.py"
+        scp_push(target, config_path, remote_cfg)
+
+        extra: list[str] = []
+        if task.backend == AcceleratorBackend.VLLM:
+            extra.extend(["-a", "vllm"])
+        elif task.backend == AcceleratorBackend.LMDEPLOY:
+            extra.extend(["-a", "lmdeploy"])
+
+        start = time.time()
+
+        def _log(line: str) -> None:
+            if line.strip():
+                task_store.append_log_lines(task_id, [line])
+
+        exit_code = run_opencompass_ssh_stream(
+            target,
+            oc_remote,
+            remote_cfg,
+            rw,
+            extra,
+            _log,
+            env_pythonpath=oc_remote,
+            timeout=None,
+        )
+        duration = time.time() - start
+
+        if exit_code != 0:
+            task_store.update_task_status(
+                task_id,
+                TaskStatus.FAILED,
+                error_message=f"opencompass remote exited with code {exit_code}",
+            )
+            task_store.append_log_lines(task_id, [f"[{_ts()}] FAILED (exit={exit_code})"])
+            return
+
+        # Mirror remote outputs into local work_dir for result parsing
+        spec = f"{target.user}@{target.host}:{rw}/."
+        scp_cmd = ["scp", "-r", "-P", str(target.port)]
+        if target.identity_file:
+            scp_cmd.extend(["-i", target.identity_file, "-o", "BatchMode=yes"])
+        scp_cmd.extend([spec, str(local_root)])
+        pr = subprocess.run(scp_cmd, capture_output=True, text=True)
+        if pr.returncode != 0:
+            task_store.append_log_lines(
+                task_id,
+                [f"[{_ts()}] WARN pull results: {pr.stderr or pr.stdout}"],
+            )
+
+        result = _collect_results(task)
+        if result:
+            result.total_time_seconds = duration
+            result.backend_used = task.backend.value
+            task_store.update_task_result(task_id, result)
+
+        task_store.update_task_status(task_id, TaskStatus.SUCCESS)
+        task_store.append_log_lines(task_id, [f"[{_ts()}] Task completed (ssh) in {duration:.1f}s"])
+
+    except Exception as e:
+        logger.exception("SSH task %s failed", task_id)
         task_store.update_task_status(task_id, TaskStatus.FAILED, error_message=str(e))
         task_store.append_log_lines(task_id, [f"[{_ts()}] Exception: {e}"])
 
@@ -106,7 +217,7 @@ eval = dict(
     ),
 )
 
-work_dir = '{task.work_dir}'
+work_dir = '{_opencompass_work_dir(task)}'
 '''
     config_path.write_text(config_content)
     return str(config_path)

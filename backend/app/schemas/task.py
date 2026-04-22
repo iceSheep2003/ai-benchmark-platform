@@ -6,6 +6,8 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
+from .execution import ExecutionMode, ExecutionSpec
+
 
 class TaskStatus(str, Enum):
     PENDING = "PENDING"
@@ -53,6 +55,10 @@ class AcceleratorTaskCreate(BaseModel):
     extra_args: dict[str, Any] = Field(
         default_factory=dict,
         description="Extra opencompass CLI arguments, e.g. {'reuse': 'latest'}",
+    )
+    execution: ExecutionSpec = Field(
+        default_factory=ExecutionSpec,
+        description="local = run on API host; ssh = run via configured target",
     )
 
 
@@ -115,6 +121,13 @@ class TaskResponse(BaseModel):
     result: Optional[TaskResult] = None
     error_message: Optional[str] = None
     log_tail: list[str] = Field(default_factory=list, description="Last N log lines")
+
+    execution_mode: ExecutionMode = ExecutionMode.LOCAL
+    ssh_target_id: Optional[str] = None
+    remote_workspace: Optional[str] = Field(
+        default=None,
+        description="Absolute OpenCompass -w directory on remote when execution_mode=ssh",
+    )
 
     class Config:
         from_attributes = True

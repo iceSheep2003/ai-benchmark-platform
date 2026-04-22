@@ -5,6 +5,8 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
+from .execution import ExecutionSpec
+
 
 class TestCategory(str, Enum):
     CHIP_BASIC = "chip_basic"
@@ -239,6 +241,7 @@ class AcceleratorTestCreate(BaseModel):
     config: dict[str, Any] = Field(default_factory=dict)
     num_gpus: int = Field(default=1, ge=1, le=64)
     description: Optional[str] = None
+    execution: ExecutionSpec = Field(default_factory=ExecutionSpec)
 
 
 class AcceleratorTestResult(BaseModel):
