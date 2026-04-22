@@ -27,6 +27,9 @@ dist-ssr
 .cache/
 generated-configs/
 
+# SSH targets saved from admin UI (may contain hostnames / key paths)
+backend/data/ssh_targets.json
+
 # Dataset bulk: sync scripts + parquet_to_test_jsonl regenerate these
 public/datasets/open-source/
 public/datasets/self-built/

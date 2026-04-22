@@ -9,6 +9,7 @@ import {
   UserOutlined,
   LogoutOutlined,
   TrophyOutlined,
+  CloudServerOutlined,
 } from '@ant-design/icons';
 import { ConfigProvider } from 'antd';
 import { appTheme } from './theme';
@@ -21,6 +22,7 @@ import TestResultManagement from './pages/TestResultManagement';
 import ComparisonManagementPage from './pages/ComparisonManagementPage';
 import AcceleratorTestResultManagement from './pages/AcceleratorTestResultManagement';
 import AcceleratorComparisonPage from './pages/AcceleratorComparisonPage';
+import RemoteHostsSettingsModal from './components/RemoteHostsSettingsModal';
 
 const { Header, Sider, Content } = Layout;
 
@@ -34,6 +36,7 @@ type MenuItem = {
 const App: React.FC = () => {
   const { sidebarCollapsed, setSidebarCollapsed, currentPage, setCurrentPage } = useAppStore();
   const [openKeys, setOpenKeys] = useState<string[]>(['llm']);
+  const [remoteHostsOpen, setRemoteHostsOpen] = useState(false);
   const currentUser = {
     name: 'Admin User',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin',
@@ -45,6 +48,8 @@ const App: React.FC = () => {
       console.log('Logout clicked');
     } else if (key === 'profile') {
       console.log('Profile clicked');
+    } else if (key === 'remote-hosts') {
+      setRemoteHostsOpen(true);
     }
   };
 
@@ -53,6 +58,11 @@ const App: React.FC = () => {
       key: 'profile',
       icon: <UserOutlined />,
       label: '个人资料',
+    },
+    {
+      key: 'remote-hosts',
+      icon: <CloudServerOutlined />,
+      label: 'SSH 远程主机配置',
     },
     {
       type: 'divider' as const,
@@ -133,6 +143,7 @@ const App: React.FC = () => {
 
   return (
     <ConfigProvider theme={appTheme}>
+      <RemoteHostsSettingsModal open={remoteHostsOpen} onClose={() => setRemoteHostsOpen(false)} />
       <Layout style={{ minHeight: '100vh' }}>
         <Sider
           trigger={null}

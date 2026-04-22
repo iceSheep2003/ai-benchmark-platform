@@ -26,6 +26,28 @@ export interface SshTargetInfo {
   project_root: string;
 }
 
+/** Admin UI / PUT body — full row */
+export interface SshTargetConfigItem {
+  id: string;
+  host: string;
+  port: number;
+  user: string;
+  identity_file?: string | null;
+  /** 仅新建或修改密码时填入；服务端不返回明文 */
+  password?: string;
+  /** 服务端返回：是否已保存过密码 */
+  password_set?: boolean;
+  project_root: string;
+  opencompass_root?: string | null;
+  python_executable?: string;
+}
+
+export interface SshTargetsConfigResponse {
+  items: SshTargetConfigItem[];
+  persisted: boolean;
+  data_file: string;
+}
+
 export interface CreateTaskRequest {
   name: string;
   model_path: string;
@@ -198,6 +220,17 @@ export const acceleratorTaskApi = {
 
   listSshTargets() {
     return api.get<{ items: SshTargetInfo[] }>('/system/ssh-targets');
+  },
+
+  getSshTargetsConfig() {
+    return api.get<SshTargetsConfigResponse>('/system/ssh-targets-config');
+  },
+
+  saveSshTargetsConfig(items: SshTargetConfigItem[]) {
+    // POST 与 PUT 均可；部分环境对 PUT 不友好时用 POST
+    return api.post<{ ok: boolean; items: SshTargetConfigItem[] }>('/system/ssh-targets-config', {
+      items,
+    });
   },
 
   healthCheck() {

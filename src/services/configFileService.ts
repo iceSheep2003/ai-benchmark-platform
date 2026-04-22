@@ -1,4 +1,5 @@
 import type { OpenCompassLikeAcceleratorConfig, OpenCompassLikeBenchmarkConfig } from '../types';
+import { getApiV1Base } from './apiV1Base';
 
 export interface ConfigFileRecord {
   fileName: string;
@@ -24,7 +25,7 @@ export const generateConfigFile = async (
   payload: GenerateConfigFileRequest
 ): Promise<GenerateConfigFileResponse> => {
   try {
-    const response = await fetch('/api/v1/config-files', {
+    const response = await fetch(`${getApiV1Base()}/config-files`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

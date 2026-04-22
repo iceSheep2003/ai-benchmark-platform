@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import logging
 import shlex
-import subprocess
 import tempfile
 from pathlib import Path
 from typing import Callable, Optional
@@ -12,51 +11,14 @@ from ..schemas.test_case import AcceleratorTestCreate, AcceleratorTestResult, Te
 from ..schemas.task import TaskStatus
 from . import test_store
 from .ssh_config import SshTarget
+from .ssh_transport import (
+    scp_pull,
+    scp_push,
+    ssh_run_bash,
+    run_streaming_command,
+)
 
 logger = logging.getLogger("ssh_runner")
-
-
-def _ssh_base(t: SshTarget) -> list[str]:
-    cmd = [
-        "ssh",
-        "-p",
-        str(t.port),
-        "-o",
-        "StrictHostKeyChecking=accept-new",
-    ]
-    if t.identity_file:
-        cmd.extend(["-i", t.identity_file, "-o", "BatchMode=yes"])
-    return cmd
-
-
-def _scp_base(t: SshTarget, push: bool) -> list[str]:
-    # scp: -P for port
-    cmd = ["scp", "-P", str(t.port)]
-    if t.identity_file:
-        cmd.extend(["-i", t.identity_file, "-o", "BatchMode=yes"])
-    return cmd
-
-
-def ssh_run_bash(t: SshTarget, bash_line: str, timeout: Optional[float] = None) -> subprocess.CompletedProcess:
-    """Run a single bash command line on remote (internal use only; caller must quote safely)."""
-    full = _ssh_base(t) + [f"{t.user}@{t.host}", bash_line]
-    return subprocess.run(full, capture_output=True, text=True, timeout=timeout)
-
-
-def scp_push(t: SshTarget, local_path: str, remote_path: str) -> None:
-    spec = f"{t.user}@{t.host}:{remote_path}"
-    cmd = _scp_base(t, True) + [local_path, spec]
-    r = subprocess.run(cmd, capture_output=True, text=True)
-    if r.returncode != 0:
-        raise RuntimeError(f"scp push failed: {r.stderr or r.stdout}")
-
-
-def scp_pull(t: SshTarget, remote_path: str, local_path: str) -> None:
-    spec = f"{t.user}@{t.host}:{remote_path}"
-    cmd = _scp_base(t, False) + [spec, local_path]
-    r = subprocess.run(cmd, capture_output=True, text=True)
-    if r.returncode != 0:
-        raise RuntimeError(f"scp pull failed: {r.stderr or r.stdout}")
 
 
 def run_test_case_via_ssh(task_id: str) -> None:
@@ -117,12 +79,7 @@ def run_test_case_via_ssh(task_id: str) -> None:
         f"test-case {shlex.quote(remote_req)}"
     )
     test_store.append_test_log(task_id, [f"[ssh] {inner}"])
-    proc = subprocess.run(
-        _ssh_base(target) + [f"{target.user}@{target.host}", inner],
-        capture_output=True,
-        text=True,
-        timeout=3600,
-    )
+    proc = ssh_run_bash(target, inner, timeout=3600)
     if proc.stdout:
         test_store.append_test_log(task_id, proc.stdout.strip().split("\n")[-50:])
     if proc.returncode != 0:
@@ -203,14 +160,4 @@ def run_opencompass_ssh_stream(
         f"cd {oc} && export PYTHONPATH={shlex.quote(env_pythonpath)} && "
         f"{py} {run_py} {rcfg} -w {rw} --max-num-workers 1 {extras} 2>&1"
     )
-    full = _ssh_base(t) + [f"{t.user}@{t.host}", inner]
-    proc = subprocess.Popen(full, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-    assert proc.stdout
-    try:
-        for line in proc.stdout:
-            log_callback(line.rstrip())
-        proc.wait(timeout=timeout)
-        return proc.returncode or 0
-    finally:
-        if proc.poll() is None:
-            proc.kill()
+    return run_streaming_command(t, inner, log_callback, timeout=timeout)

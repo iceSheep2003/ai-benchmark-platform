@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { getApiV1Base } from './apiV1Base';
 
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: getApiV1Base(),
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });

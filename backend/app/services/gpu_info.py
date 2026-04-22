@@ -6,32 +6,21 @@ import platform
 
 from ..schemas.task import GPUInfo, SystemInfoResponse
 from .ssh_config import SshTarget
+from .ssh_transport import ssh_run_bash
 
 
 def query_gpu_info_ssh_target(target: SshTarget) -> SystemInfoResponse:
     """Run nvidia-smi on a remote host via SSH (same query shape as local)."""
-    cmd = [
-        "ssh",
-        "-p",
-        str(target.port),
-        "-o",
-        "StrictHostKeyChecking=accept-new",
-    ]
-    if target.identity_file:
-        cmd.extend(["-i", target.identity_file, "-o", "BatchMode=yes"])
-    cmd.append(f"{target.user}@{target.host}")
-    cmd.extend(
-        [
-            "nvidia-smi",
-            "--query-gpu=index,name,memory.total,memory.used,memory.free,utilization.gpu,temperature.gpu,power.draw",
-            "--format=csv,noheader,nounits",
-        ]
+    remote_cmd = (
+        "nvidia-smi "
+        "--query-gpu=index,name,memory.total,memory.used,memory.free,utilization.gpu,temperature.gpu,power.draw "
+        "--format=csv,noheader,nounits"
     )
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        result = ssh_run_bash(target, remote_cmd, timeout=30)
         if result.returncode != 0:
             return _remote_fallback(target.host, result.stderr or result.stdout)
-    except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+    except Exception as e:
         return _remote_fallback(target.host, str(e))
 
     gpus = _parse_nvidia_smi_lines(result.stdout)

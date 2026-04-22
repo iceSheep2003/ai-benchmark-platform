@@ -87,6 +87,7 @@ def _run_task(task_id: str) -> None:
 def _run_task_ssh(task_id: str) -> None:
     from .ssh_config import get_target
     from .ssh_runner import run_opencompass_ssh_stream, scp_push, ssh_run_bash
+    from .ssh_transport import scp_pull_dir
 
     task = task_store.get_task(task_id)
     if not task or not task.ssh_target_id or not task.remote_workspace:
@@ -156,17 +157,10 @@ def _run_task_ssh(task_id: str) -> None:
             return
 
         # Mirror remote outputs into local work_dir for result parsing
-        spec = f"{target.user}@{target.host}:{rw}/."
-        scp_cmd = ["scp", "-r", "-P", str(target.port)]
-        if target.identity_file:
-            scp_cmd.extend(["-i", target.identity_file, "-o", "BatchMode=yes"])
-        scp_cmd.extend([spec, str(local_root)])
-        pr = subprocess.run(scp_cmd, capture_output=True, text=True)
-        if pr.returncode != 0:
-            task_store.append_log_lines(
-                task_id,
-                [f"[{_ts()}] WARN pull results: {pr.stderr or pr.stdout}"],
-            )
+        try:
+            scp_pull_dir(target, rw, local_root)
+        except Exception as ex:
+            task_store.append_log_lines(task_id, [f"[{_ts()}] WARN pull results: {ex}"])
 
         result = _collect_results(task)
         if result:
