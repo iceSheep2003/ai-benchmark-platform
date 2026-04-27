@@ -3,6 +3,8 @@ import { Modal, Form, Input, Button, message, Row, Col, Divider } from 'antd';
 import { RocketOutlined } from '@ant-design/icons';
 import { useAppStore } from '../../store/appStore';
 import type { TaskStatus, TaskPriority } from '../../types';
+import { buildOpenCompassLikeConfig } from '../../utils/opencompassConfig';
+import { generateConfigFile } from '../../services/configFileService';
 import { ModelSelector } from './ModelSelector';
 import { CapabilityModule } from './CapabilityModule';
 import './LLMEvaluationConfig.css';
@@ -14,13 +16,13 @@ interface LLMEvaluationConfigProps {
 
 interface TaskFormData {
   taskName: string;
-  model: string;
-  version: string;
-  capabilities: {
-    id: string;
-    tests: string[];
-    datasets: string[];
-  }[];
+}
+
+interface CapabilitySelection {
+  id: string;
+  title: string;
+  selectedTests?: string[];
+  selectedDatasets?: string[];
 }
 
 export const LLMEvaluationConfig: React.FC<LLMEvaluationConfigProps> = ({ visible, onClose }) => {
@@ -28,7 +30,7 @@ export const LLMEvaluationConfig: React.FC<LLMEvaluationConfigProps> = ({ visibl
   const [form] = Form.useForm<TaskFormData>();
   const [selectedModel, setSelectedModel] = useState<string>('');
   const [selectedVersion, setSelectedVersion] = useState<Record<string, string>>({});
-  const [capabilities, setCapabilities] = useState<any[]>([]);
+  const [capabilities, setCapabilities] = useState<CapabilitySelection[]>([]);
 
   const handleModelChange = (model: string) => {
     setSelectedModel(model);
@@ -38,7 +40,7 @@ export const LLMEvaluationConfig: React.FC<LLMEvaluationConfigProps> = ({ visibl
     setSelectedVersion(prev => ({ ...prev, [model]: version }));
   };
 
-  const handleCapabilitiesChange = (newCapabilities: any[]) => {
+  const handleCapabilitiesChange = (newCapabilities: CapabilitySelection[]) => {
     setCapabilities(newCapabilities);
   };
 
@@ -65,23 +67,40 @@ export const LLMEvaluationConfig: React.FC<LLMEvaluationConfigProps> = ({ visibl
         return;
       }
 
+      const selectedCapabilities = capabilities
+        .filter(cap => cap.selectedTests && cap.selectedTests.length > 0)
+        .map(cap => ({
+          id: cap.id,
+          title: cap.title || '',
+          tests: cap.selectedTests || [],
+          datasets: cap.selectedDatasets || []
+        }));
+
       const taskData = {
         taskName: values.taskName,
         model: selectedModel,
         version: selectedVersion[selectedModel],
-        capabilities: capabilities
-          .filter(cap => cap.selectedTests && cap.selectedTests.length > 0)
-          .map(cap => ({
-            id: cap.id,
-            tests: cap.selectedTests,
-            datasets: cap.selectedDatasets || []
-          }))
+        capabilities: selectedCapabilities
       };
 
       console.log('提交任务数据:', taskData);
 
+      const taskId = `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const openCompassConfig = buildOpenCompassLikeConfig({
+        taskName: taskData.taskName,
+        model: taskData.model,
+        version: taskData.version,
+        capabilities: taskData.capabilities,
+      });
+      const configWriteResult = await generateConfigFile({
+        taskId,
+        taskName: taskData.taskName,
+        taskType: 'llm',
+        config: openCompassConfig,
+      });
+
       const newTask = {
-        id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: taskId,
         name: taskData.taskName || `${taskData.model} - ${taskData.version} 评测`,
         type: 'llm' as const,
         status: 'PENDING' as TaskStatus,
@@ -92,12 +111,10 @@ export const LLMEvaluationConfig: React.FC<LLMEvaluationConfigProps> = ({ visibl
         llmConfig: {
           model: taskData.model,
           version: taskData.version,
-          capabilities: taskData.capabilities.map(cap => ({
-            id: cap.id,
-            title: capabilities.find(c => c.id === cap.id)?.title || '',
-            tests: cap.tests,
-            datasets: cap.datasets
-          }))
+          capabilities: taskData.capabilities,
+          openCompassConfig,
+          generatedConfigFile: configWriteResult.success ? configWriteResult.file : undefined,
+          configGenerationError: configWriteResult.success ? undefined : configWriteResult.error,
         },
         priority: 'P2' as TaskPriority,
         estimatedStartTime: new Date(Date.now() + Math.random() * 1800000 + 300000).toISOString(),
@@ -105,7 +122,11 @@ export const LLMEvaluationConfig: React.FC<LLMEvaluationConfigProps> = ({ visibl
       };
 
       addTask(newTask);
-      message.success('评测任务创建成功');
+      if (configWriteResult.success) {
+        message.success('评测任务创建成功，配置文件已生成');
+      } else {
+        message.warning(`任务已创建，但配置文件落盘失败：${configWriteResult.error}`);
+      }
       onClose();
       form.resetFields();
       setSelectedModel('');

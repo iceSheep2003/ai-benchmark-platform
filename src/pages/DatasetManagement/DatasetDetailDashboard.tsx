@@ -17,6 +17,8 @@ import {
   Descriptions,
   Table,
   Avatar,
+  Spin,
+  Image,
 } from 'antd';
 import {
   DatabaseOutlined,
@@ -33,6 +35,7 @@ import * as echarts from 'echarts';
 import type { Dataset } from '../../types/dataset';
 import { TASK_TYPE_LABELS, TASK_TYPE_ICONS, EVALUATION_DIMENSION_LABELS, DATASET_SOURCE_LABELS } from '../../types/dataset';
 import { getRelatedTasks } from '../../services/assetTaskLinker';
+import { getDatasetBasePath, loadDatasetPreviewRows } from '../../services/datasetCatalogService';
 import { useAppStore } from '../../store/appStore';
 
 const { Text } = Typography;
@@ -57,6 +60,10 @@ export const DatasetDetailDashboard: React.FC<DatasetDetailDashboardProps> = ({ 
   const [compareModalVisible, setCompareModalVisible] = useState(false);
   const [rollbackModalVisible, setRollbackModalVisible] = useState(false);
   const [selectedVersionForRollback, setSelectedVersionForRollback] = useState<string>('');
+  const [previewDataRows, setPreviewDataRows] = useState<Record<string, unknown>[]>([]);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewSource, setPreviewSource] = useState<'test' | 'sample' | 'catalog'>('catalog');
+  const [previewError, setPreviewError] = useState('');
 
   const radarChartRef = useRef<HTMLDivElement>(null);
   const barChartRef = useRef<HTMLDivElement>(null);
@@ -321,6 +328,29 @@ export const DatasetDetailDashboard: React.FC<DatasetDetailDashboardProps> = ({ 
       robustnessChartInstance.current?.dispose();
     };
   }, [visible, activeTab, initRadarChart, initBarChart, initPieChart, initRobustnessChart, dataset]);
+
+  useEffect(() => {
+    if (!visible) return;
+
+    const loadPreview = async () => {
+      setPreviewLoading(true);
+      setPreviewError('');
+      try {
+        const fallbackPreviewData = ((dataset as Dataset & { previewData?: Record<string, unknown>[] }).previewData || []);
+        const result = await loadDatasetPreviewRows(dataset, fallbackPreviewData);
+        setPreviewDataRows(result.rows);
+        setPreviewSource(result.source);
+      } catch (error) {
+        setPreviewDataRows([]);
+        setPreviewSource('catalog');
+        setPreviewError(error instanceof Error ? error.message : '加载预览数据失败');
+      } finally {
+        setPreviewLoading(false);
+      }
+    };
+
+    void loadPreview();
+  }, [dataset, visible]);
 
   const handleVersionCompare = () => {
     if (selectedVersions[0] && selectedVersions[1]) {
@@ -633,174 +663,57 @@ export const DatasetDetailDashboard: React.FC<DatasetDetailDashboardProps> = ({ 
   );
 
   const renderSamplePreviewTab = () => {
-    const previewData = Array.from({ length: 100 }, (_, i) => ({
-      id: i + 1,
-      text: `Sample text ${i + 1}`,
-      label: i % 2 === 0 ? 'positive' : 'negative',
-      score: Math.random().toFixed(2),
+    const datasetBasePath = getDatasetBasePath(dataset);
+    const previewData = previewDataRows.length > 0
+      ? previewDataRows.map((row, i) => ({ id: i + 1, ...row }))
+      : [{ id: 1, text: '暂无可预览样本', label: '-', score: '-' }];
+    const mockSamples = previewData.slice(0, 8).map((row, idx) => {
+      const text = JSON.stringify(row).slice(0, 300);
+      return {
+        id: String(idx + 1),
+        type: 'text' as const,
+        content: text,
+        evaluationDimension: EVALUATION_DIMENSION_LABELS[dataset.evaluationDimension],
+        difficulty: idx < 3 ? 'easy' as const : idx < 6 ? 'medium' as const : 'hard' as const,
+      };
+    });
+
+    const resolveImagePath = (value: unknown): string | null => {
+      if (typeof value === 'string' && value.startsWith('image/')) {
+        return `${datasetBasePath}/${value}`;
+      }
+      if (value && typeof value === 'object') {
+        const maybePath = (value as { path?: unknown }).path;
+        if (typeof maybePath === 'string' && maybePath.startsWith('image/')) {
+          return `${datasetBasePath}/${maybePath}`;
+        }
+      }
+      return null;
+    };
+
+    const tableColumns = Object.keys(previewData[0] || {}).map((key) => ({
+      title: key,
+      dataIndex: key,
+      key,
+      ellipsis: true,
+      width: key === 'id' ? 80 : undefined,
+      render: (value: unknown) => {
+        const imageSrc = resolveImagePath(value);
+        if (imageSrc) {
+          return <Image src={imageSrc} width={80} height={80} style={{ objectFit: 'cover' }} />;
+        }
+        if (typeof value === 'object' && value !== null) {
+          return <span>{JSON.stringify(value)}</span>;
+        }
+        return <span>{String(value ?? '')}</span>;
+      },
     }));
 
-    const mockSamples = useMemo(() => {
-      const baseSamples = [
-        {
-          id: '1',
-          type: 'text' as const,
-          content: '这是一个典型的文本样本，用于评估模型的语言理解能力。',
-          evaluationDimension: EVALUATION_DIMENSION_LABELS[dataset.evaluationDimension],
-          difficulty: 'easy' as const,
-        },
-        {
-          id: '2',
-          type: 'code' as const,
-          content: 'def calculate_metrics(predictions, labels):\n    accuracy = sum(p == l for p, l in zip(predictions, labels)) / len(labels)\n    return accuracy',
-          evaluationDimension: EVALUATION_DIMENSION_LABELS[dataset.evaluationDimension],
-          difficulty: 'medium' as const,
-        },
-        {
-          id: '3',
-          type: 'text' as const,
-          content: '这是一个中等难度的样本，需要模型具备一定的推理能力。',
-          evaluationDimension: EVALUATION_DIMENSION_LABELS[dataset.evaluationDimension],
-          difficulty: 'medium' as const,
-        },
-        {
-          id: '4',
-          type: 'matrix' as const,
-          content: '[[0.8, 0.2, 0.0], [0.1, 0.7, 0.2], [0.0, 0.3, 0.7]]',
-          evaluationDimension: EVALUATION_DIMENSION_LABELS[dataset.evaluationDimension],
-          difficulty: 'hard' as const,
-        },
-        {
-          id: '5',
-          type: 'text' as const,
-          content: '这是一个高难度样本，测试模型的极限性能和鲁棒性。',
-          evaluationDimension: EVALUATION_DIMENSION_LABELS[dataset.evaluationDimension],
-          difficulty: 'hard' as const,
-        },
-      ];
-
-      if (dataset.taskType === 'training') {
-        return [
-          {
-            id: '1',
-            type: 'text' as const,
-            content: 'ImageNet训练样本：ResNet-50模型训练速度测试',
-            evaluationDimension: '性能',
-            difficulty: 'easy' as const,
-          },
-          {
-            id: '2',
-            type: 'text' as const,
-            content: 'ViT模型收敛精度测试：训练轮次100，学习率0.001',
-            evaluationDimension: '性能',
-            difficulty: 'medium' as const,
-          },
-          {
-            id: '3',
-            type: 'text' as const,
-            content: 'Transformer模型能效比测试：GPU利用率95%，能耗12.5W',
-            evaluationDimension: '性能',
-            difficulty: 'hard' as const,
-          },
-          {
-            id: '4',
-            type: 'text' as const,
-            content: 'GPT模型训练稳定性测试：梯度爆炸检测，损失函数收敛',
-            evaluationDimension: '性能',
-            difficulty: 'medium' as const,
-          },
-          {
-            id: '5',
-            type: 'text' as const,
-            content: 'BERT模型训练速度优化：混合精度训练，批处理大小256',
-            evaluationDimension: '性能',
-            difficulty: 'hard' as const,
-          },
-        ];
-      }
-
-      if (dataset.taskType === 'inference') {
-        return [
-          {
-            id: '1',
-            type: 'text' as const,
-            content: 'GLUE推理延迟测试：平均延迟15ms，P99延迟45ms',
-            evaluationDimension: '性能',
-            difficulty: 'easy' as const,
-          },
-          {
-            id: '2',
-            type: 'text' as const,
-            content: 'SuperGLUE吞吐率测试：QPS=1250，并发数=8',
-            evaluationDimension: '性能',
-            difficulty: 'medium' as const,
-          },
-          {
-            id: '3',
-            type: 'text' as const,
-            content: 'SQuAD正确率测试：F1=89.5，EM=82.3',
-            evaluationDimension: '性能',
-            difficulty: 'hard' as const,
-          },
-          {
-            id: '4',
-            type: 'text' as const,
-            content: '推理资源利用率测试：GPU显存占用85%，计算单元92%',
-            evaluationDimension: '性能',
-            difficulty: 'medium' as const,
-          },
-          {
-            id: '5',
-            type: 'text' as const,
-            content: '批量推理性能测试：batch_size=32，吞吐率提升3.2倍',
-            evaluationDimension: '性能',
-            difficulty: 'hard' as const,
-          },
-        ];
-      }
-
-      if (dataset.taskType === 'matrix-computation') {
-        return [
-          {
-            id: '1',
-            type: 'matrix' as const,
-            content: '稠密矩阵乘法：10000×10000，计算吞吐率850 GFLOPS',
-            evaluationDimension: '性能',
-            difficulty: 'easy' as const,
-          },
-          {
-            id: '2',
-            type: 'matrix' as const,
-            content: '稀疏矩阵运算：非零元素占比5%，内存带宽利用率78%',
-            evaluationDimension: '性能',
-            difficulty: 'medium' as const,
-          },
-          {
-            id: '3',
-            type: 'matrix' as const,
-            content: 'LU分解：5000×5000矩阵，计算时间125ms',
-            evaluationDimension: '性能',
-            difficulty: 'hard' as const,
-          },
-          {
-            id: '4',
-            type: 'matrix' as const,
-            content: 'SVD分解：3000×3000矩阵，并行扩展性92%',
-            evaluationDimension: '性能',
-            difficulty: 'hard' as const,
-          },
-          {
-            id: '5',
-            type: 'matrix' as const,
-            content: '张量并行计算：4卡并行，加速比3.8倍',
-            evaluationDimension: '性能',
-            difficulty: 'hard' as const,
-          },
-        ];
-      }
-
-      return baseSamples;
-    }, [dataset.taskType, dataset.evaluationDimension]);
+    const previewSourceLabel: Record<'test' | 'sample' | 'catalog', string> = {
+      test: 'test.jsonl',
+      sample: 'sample.jsonl',
+      catalog: 'catalog previewData',
+    };
 
     return (
       <div>
@@ -811,23 +724,30 @@ export const DatasetDetailDashboard: React.FC<DatasetDetailDashboardProps> = ({ 
             </Tag>
             <Tag color="purple">{dataset.version}</Tag>
             <Tag color="orange">{dataset.sampleCount.toLocaleString()} rows</Tag>
+            <Tag color="cyan">预览来源: {previewSourceLabel[previewSource]}</Tag>
           </Space>
         </div>
 
-        <Card title="Data Preview (First 100 rows)" style={{ marginTop: '16px' }}>
-          <Table
-            dataSource={previewData.slice(0, 100)}
-            columns={Object.keys(previewData[0] || {}).map(key => ({
-              title: key,
-              dataIndex: key,
-              key,
-              ellipsis: true,
-              width: key === 'id' ? 80 : undefined,
-            }))}
-            pagination={{ pageSize: 10, showSizeChanger: true, showQuickJumper: true }}
-            scroll={{ x: 'max-content', y: 400 }}
-            size="small"
+        {previewError && (
+          <Alert
+            message="预览加载失败"
+            description={previewError}
+            type="warning"
+            showIcon
+            style={{ marginBottom: '16px' }}
           />
+        )}
+
+        <Card title="Data Preview (First 100 rows)" style={{ marginTop: '16px' }}>
+          <Spin spinning={previewLoading}>
+            <Table
+              dataSource={previewData.slice(0, 100)}
+              columns={tableColumns}
+              pagination={{ pageSize: 10, showSizeChanger: true, showQuickJumper: true }}
+              scroll={{ x: 'max-content', y: 400 }}
+              size="small"
+            />
+          </Spin>
         </Card>
 
         <Card title="样本预览" style={{ marginTop: '24px' }}>
@@ -859,43 +779,16 @@ export const DatasetDetailDashboard: React.FC<DatasetDetailDashboardProps> = ({ 
                     </Space>
                   }
                 >
-                  {sample.type === 'text' && (
-                    <div style={{ 
-                      padding: '8px', 
-                      backgroundColor: '#f5f5f5', 
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      maxHeight: '100px',
-                      overflow: 'auto'
-                    }}>
-                      {sample.content}
-                    </div>
-                  )}
-                  {sample.type === 'code' && (
-                    <div style={{ 
-                      padding: '8px', 
-                      backgroundColor: '#1e1e1e', 
-                      borderRadius: '4px',
-                      fontSize: '11px',
-                      color: '#d4d4d4',
-                      fontFamily: 'monospace',
-                      maxHeight: '120px',
-                      overflow: 'auto'
-                    }}>
-                      <pre style={{ margin: 0 }}>{sample.content}</pre>
-                    </div>
-                  )}
-                  {sample.type === 'matrix' && (
-                    <div style={{ 
-                      padding: '8px', 
-                      backgroundColor: '#f5f5f5', 
-                      borderRadius: '4px',
-                      fontSize: '11px',
-                      fontFamily: 'monospace'
-                    }}>
-                      <pre style={{ margin: 0 }}>{sample.content}</pre>
-                    </div>
-                  )}
+                  <div style={{ 
+                    padding: '8px', 
+                    backgroundColor: '#f5f5f5', 
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    maxHeight: '100px',
+                    overflow: 'auto'
+                  }}>
+                    {sample.content}
+                  </div>
                 </Card>
               </Col>
             ))}

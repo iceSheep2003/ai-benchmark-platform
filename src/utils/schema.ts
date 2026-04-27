@@ -8,8 +8,17 @@ addFormats(ajv);
 export const benchmarkConfigSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
-  required: ['name', 'model', 'dataset', 'resources', 'evaluation'],
+  required: ['type', 'schema_version', 'name', 'work_dir', 'models', 'datasets', 'infer', 'eval', 'summarizer'],
   properties: {
+    type: {
+      type: 'string',
+      enum: ['opencompass'],
+      description: 'Unified benchmark configuration style',
+    },
+    schema_version: {
+      type: 'string',
+      description: 'Config schema version',
+    },
     name: {
       type: 'string',
       minLength: 1,
@@ -21,149 +30,172 @@ export const benchmarkConfigSchema = {
       maxLength: 500,
       description: 'Configuration description',
     },
-    model: {
-      type: 'object',
-      required: ['name', 'precision'],
-      properties: {
-        name: {
-          type: 'string',
-          enum: ['Llama3-8B', 'Llama3-70B', 'Qwen-14B', 'Qwen-72B', 'GPT-4', 'Claude-3'],
-          description: 'Model name',
-        },
-        precision: {
-          type: 'string',
-          enum: ['FP16', 'FP32', 'INT8', 'INT4'],
-          description: 'Model precision',
-        },
-        maxContextLength: {
-          type: 'integer',
-          minimum: 1,
-          maximum: 128000,
-          description: 'Maximum context length in tokens',
-        },
-        temperature: {
-          type: 'number',
-          minimum: 0,
-          maximum: 2,
-          description: 'Sampling temperature (0.0 to 2.0)',
-        },
-        topP: {
-          type: 'number',
-          minimum: 0,
-          maximum: 1,
-          description: 'Nucleus sampling threshold',
-        },
-      },
+    work_dir: {
+      type: 'string',
+      description: 'Directory to save predictions and results',
     },
-    dataset: {
-      type: 'object',
-      required: ['name', 'version'],
-      properties: {
-        name: {
-          type: 'string',
-          enum: ['MMLU', 'GSM8K', 'Custom'],
-          description: 'Dataset name',
-        },
-        version: {
-          type: 'string',
-          description: 'Dataset version',
-        },
-        batchSize: {
-          type: 'integer',
-          minimum: 1,
-          maximum: 1024,
-          description: 'Batch size for processing',
-        },
-        shuffle: {
-          type: 'boolean',
-          description: 'Whether to shuffle the dataset',
-        },
-      },
-    },
-    resources: {
-      type: 'object',
-      required: ['cardModel', 'gpuCount'],
-      properties: {
-        cardModel: {
-          type: 'string',
-          enum: ['NVIDIA H100', 'NVIDIA A100', 'NVIDIA A800', 'Huawei 910B', 'AMD MI300X'],
-          description: 'Accelerator model',
-        },
-        resourceId: {
-          type: 'string',
-          description: 'Specific resource instance ID',
-        },
-        gpuCount: {
-          type: 'integer',
-          minimum: 1,
-          maximum: 8,
-          description: 'Number of GPU devices',
-        },
-        memoryLimit: {
-          type: 'number',
-          minimum: 1,
-          maximum: 192,
-          description: 'Memory limit per GPU in GB',
-        },
-        tensorParallel: {
-          type: 'boolean',
-          description: 'Enable tensor parallelism',
-        },
-      },
-    },
-    evaluation: {
-      type: 'object',
-      required: ['metrics', 'mode'],
-      properties: {
-        metrics: {
-          type: 'array',
-          items: {
-            type: 'string',
-            enum: ['accuracy', 'throughput', 'latency', 'latency_p99', 'memory_usage', 'energy_efficiency', 'cost_per_token'],
+    models: {
+      type: 'array',
+      minItems: 1,
+      items: {
+        type: 'object',
+        required: ['type', 'abbr', 'path', 'backend', 'max_out_len', 'batch_size', 'run_cfg'],
+        properties: {
+          type: { type: 'string' },
+          abbr: { type: 'string' },
+          path: { type: 'string' },
+          backend: { type: 'string', enum: ['local', 'api'] },
+          max_out_len: { type: 'integer', minimum: 1 },
+          batch_size: { type: 'integer', minimum: 1 },
+          run_cfg: {
+            type: 'object',
+            required: ['num_gpus'],
+            properties: {
+              num_gpus: { type: 'integer', minimum: 0 },
+            },
           },
-          minItems: 1,
-          description: 'Evaluation metrics',
-        },
-        mode: {
-          type: 'string',
-          enum: ['inference', 'training', 'finetuning'],
-          description: 'Evaluation mode',
-        },
-        numSamples: {
-          type: 'integer',
-          minimum: 0,
-          description: 'Number of samples to evaluate (0 for all)',
-        },
-        customParams: {
-          type: 'string',
-          description: 'Custom parameters for evaluation',
+          generation_kwargs: {
+            type: 'object',
+            properties: {
+              temperature: { type: 'number', minimum: 0, maximum: 2 },
+              top_p: { type: 'number', minimum: 0, maximum: 1 },
+            },
+          },
         },
       },
     },
-    export: {
+    datasets: {
+      type: 'array',
+      minItems: 1,
+      items: {
+        type: 'object',
+        required: ['abbr', 'type', 'reader_cfg', 'infer_cfg', 'eval_cfg'],
+        properties: {
+          abbr: { type: 'string' },
+          type: { type: 'string' },
+          capability_ids: {
+            type: 'array',
+            items: { type: 'string' },
+          },
+          selected_tests: {
+            type: 'array',
+            items: { type: 'string' },
+          },
+          reader_cfg: {
+            type: 'object',
+            properties: {
+              test_range: { type: 'string' },
+            },
+          },
+          infer_cfg: {
+            type: 'object',
+            required: ['retriever', 'inferencer'],
+            properties: {
+              prompt_template: {
+                type: 'object',
+                properties: {
+                  type: { type: 'string' },
+                  template: { type: 'string' },
+                },
+              },
+              retriever: {
+                type: 'object',
+                required: ['type'],
+                properties: {
+                  type: { type: 'string' },
+                },
+              },
+              inferencer: {
+                type: 'object',
+                required: ['type'],
+                properties: {
+                  type: { type: 'string' },
+                },
+              },
+            },
+          },
+          eval_cfg: {
+            type: 'object',
+            required: ['evaluator'],
+            properties: {
+              evaluator: {
+                type: 'object',
+                required: ['type'],
+                properties: {
+                  type: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    infer: {
       type: 'object',
+      required: ['partitioner', 'runner', 'task'],
       properties: {
-        format: {
+        partitioner: {
+          type: 'object',
+          required: ['type'],
+          properties: {
+            type: { type: 'string' },
+          },
+        },
+        runner: {
+          type: 'object',
+          required: ['type', 'max_num_workers'],
+          properties: {
+            type: { type: 'string' },
+            max_num_workers: { type: 'integer', minimum: 1 },
+          },
+        },
+        task: {
+          type: 'object',
+          required: ['type'],
+          properties: {
+            type: { type: 'string' },
+          },
+        },
+      },
+    },
+    eval: {
+      type: 'object',
+      required: ['partitioner', 'runner', 'task'],
+      properties: {
+        partitioner: {
+          type: 'object',
+          required: ['type'],
+          properties: {
+            type: { type: 'string' },
+          },
+        },
+        runner: {
+          type: 'object',
+          required: ['type', 'max_num_workers'],
+          properties: {
+            type: { type: 'string' },
+            max_num_workers: { type: 'integer', minimum: 1 },
+          },
+        },
+        task: {
+          type: 'object',
+          required: ['type'],
+          properties: {
+            type: { type: 'string' },
+          },
+        },
+      },
+    },
+    summarizer: {
+      type: 'object',
+      required: ['type'],
+      properties: {
+        type: {
           type: 'string',
-          enum: ['pdf', 'html', 'json', 'csv', 'excel'],
-          description: 'Export format',
         },
-        includeCharts: {
-          type: 'boolean',
-          description: 'Include charts in export',
-        },
-        includeLogs: {
-          type: 'boolean',
-          description: 'Include logs in export',
-        },
-        outputPath: {
-          type: 'string',
-          description: 'Output file path',
-        },
-        emailNotify: {
-          type: 'string',
-          format: 'email',
-          description: 'Email notification address',
+        summary_groups: {
+          type: 'array',
+          items: { type: 'string' },
         },
       },
     },
@@ -195,58 +227,47 @@ export function getFieldDocumentation(fieldPath: string): {
   range?: { min: number; max: number };
   default?: any;
 } | null {
-  const path = fieldPath.split('.');
-  
-  if (path[0] === 'model') {
-    if (path[1] === 'precision') {
-      return {
-        description: 'Model precision affects memory usage and inference speed',
-        type: 'string',
-        enum: ['FP16', 'FP32', 'INT8', 'INT4'],
-        default: 'FP16',
-      };
-    }
-    if (path[1] === 'temperature') {
-      return {
-        description: 'Controls randomness in generation. Lower = more deterministic, Higher = more creative',
-        type: 'number',
-        range: { min: 0, max: 2 },
-        default: 0.7,
-      };
-    }
+  if (fieldPath.includes('models') && fieldPath.includes('backend')) {
+    return {
+      description: 'Model backend type: local model or API model',
+      type: 'string',
+      enum: ['local', 'api'],
+      default: 'local',
+    };
   }
-  
-  if (path[0] === 'dataset') {
-    if (path[1] === 'batchSize') {
-      return {
-        description: 'Number of samples processed in each batch. Larger batches use more memory but may be faster',
-        type: 'integer',
-        range: { min: 1, max: 1024 },
-        default: 32,
-      };
-    }
+
+  if (fieldPath.includes('models') && fieldPath.includes('generation_kwargs') && fieldPath.includes('temperature')) {
+    return {
+      description: 'Generation randomness. Lower is more deterministic',
+      type: 'number',
+      range: { min: 0, max: 2 },
+      default: 0,
+    };
   }
-  
-  if (path[0] === 'resources') {
-    if (path[1] === 'memoryLimit') {
-      return {
-        description: 'Maximum memory allocation per GPU. Should be less than total GPU memory',
-        type: 'number',
-        range: { min: 1, max: 192 },
-        default: 70,
-      };
-    }
+
+  if (fieldPath.includes('datasets') && fieldPath.includes('reader_cfg') && fieldPath.includes('test_range')) {
+    return {
+      description: 'Dataset test range, for example [:100] means first 100 samples',
+      type: 'string',
+      default: '[:100]',
+    };
   }
-  
-  if (path[0] === 'evaluation') {
-    if (path[1] === 'metrics') {
-      return {
-        description: 'Select metrics to evaluate. Multiple metrics can be selected',
-        type: 'array',
-        enum: ['accuracy', 'throughput', 'latency', 'latency_p99', 'memory_usage', 'energy_efficiency', 'cost_per_token'],
-        default: ['throughput', 'latency'],
-      };
-    }
+
+  if ((fieldPath.startsWith('infer.') || fieldPath.startsWith('eval.')) && fieldPath.includes('runner.max_num_workers')) {
+    return {
+      description: 'Max parallel workers for task execution',
+      type: 'integer',
+      range: { min: 1, max: 32 },
+      default: 1,
+    };
+  }
+
+  if (fieldPath.startsWith('summarizer.') && fieldPath.includes('summary_groups')) {
+    return {
+      description: 'Grouping key used by summarizer for aggregated reporting',
+      type: 'array',
+      default: ['language_understanding', 'logic_reasoning'],
+    };
   }
   
   return null;

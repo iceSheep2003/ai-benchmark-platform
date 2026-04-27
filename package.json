@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:datasets": "python3 scripts/build_dataset_catalog.py",
+    "sync:datasets:preview": "python3 scripts/build_dataset_catalog.py --preview-only",
+    "parquet:to-test-jsonl": "python3 scripts/parquet_to_test_jsonl.py"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",

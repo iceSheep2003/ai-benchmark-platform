@@ -3,6 +3,8 @@ import { Modal, Form, Input, Button, message, Row, Col, Divider } from 'antd';
 import { RocketOutlined } from '@ant-design/icons';
 import { useAppStore } from '../../store/appStore';
 import type { TaskStatus, TaskPriority } from '../../types';
+import { generateConfigFile } from '../../services/configFileService';
+import { buildAcceleratorBenchmarkConfig } from '../../utils/acceleratorBenchmarkConfig';
 import { AcceleratorSelector } from './AcceleratorSelector';
 import { TaskConfigurator, type TaskDimension } from './TaskConfigurator';
 import { OfflineTestSelector, type OfflineTest } from './OfflineTestSelector';
@@ -85,8 +87,22 @@ export const AcceleratorEvaluationConfig: React.FC<AcceleratorEvaluationConfigPr
 
       console.log('提交任务数据:', taskData);
 
+      const taskId = `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const acceleratorBenchmarkConfig = buildAcceleratorBenchmarkConfig({
+        taskName: taskData.taskName,
+        accelerator: taskData.accelerator,
+        tasks: taskData.tasks,
+        offlineTests: taskData.offlineTests,
+      });
+      const configWriteResult = await generateConfigFile({
+        taskId,
+        taskName: taskData.taskName,
+        taskType: 'accelerator',
+        config: acceleratorBenchmarkConfig,
+      });
+
       const newTask = {
-        id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: taskId,
         name: taskData.taskName || `${taskData.accelerator} - 加速卡评测`,
         type: 'accelerator' as const,
         status: 'PENDING' as TaskStatus,
@@ -103,6 +119,9 @@ export const AcceleratorEvaluationConfig: React.FC<AcceleratorEvaluationConfigPr
           accelerator: taskData.accelerator,
           tasks: taskData.tasks,
           offlineTests: taskData.offlineTests,
+          acceleratorBenchmarkConfig,
+          generatedConfigFile: configWriteResult.success ? configWriteResult.file : undefined,
+          configGenerationError: configWriteResult.success ? undefined : configWriteResult.error,
         },
         priority: 'P2' as TaskPriority,
         estimatedStartTime: new Date(Date.now() + Math.random() * 1800000 + 300000).toISOString(),
@@ -110,7 +129,11 @@ export const AcceleratorEvaluationConfig: React.FC<AcceleratorEvaluationConfigPr
       };
 
       addTask(newTask);
-      message.success('加速卡评测任务创建成功');
+      if (configWriteResult.success) {
+        message.success('加速卡评测任务创建成功，配置文件已生成');
+      } else {
+        message.warning(`任务已创建，但配置文件落盘失败：${configWriteResult.error}`);
+      }
       onClose();
       form.resetFields();
       setSelectedAccelerator('');
