@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -59,14 +60,26 @@ class TrainingRunner(BaseTestRunner):
         script_path = self.work_dir / "train_script.py"
         script_path.write_text(script)
 
-        cmd = ["torchrun", f"--nproc_per_node={num_gpus}", str(script_path)]
+        torchrun_bin = shutil.which("torchrun")
+        if torchrun_bin:
+            cmd = [torchrun_bin, f"--nproc_per_node={num_gpus}", str(script_path)]
+        else:
+            # Fallback for environments where torchrun is not on PATH.
+            cmd = ["python3", "-m", "torch.distributed.run", f"--nproc_per_node={num_gpus}", str(script_path)]
 
+        visible = ",".join(str(i) for i in range(num_gpus))
         exit_code, duration = self.run_command_streaming(
-            cmd, label=f"train_{test_type}"
+            cmd,
+            label=f"train_{test_type}",
+            env={"CUDA_VISIBLE_DEVICES": visible},
         )
 
         log_path = self.work_dir / f"train_{test_type}.log"
         output = log_path.read_text() if log_path.exists() else ""
+
+        if exit_code != 0:
+            tail = "\n".join(output.strip().splitlines()[-40:]) if output else "(no training log)"
+            raise RuntimeError(f"training failed (exit={exit_code})\n{tail}")
 
         throughput = self._extract_throughput(output, test_type)
         gpu_mem = self._extract_gpu_memory(output)
@@ -158,6 +171,8 @@ import torchvision
 import time
 import os
 
+if not torch.cuda.is_available():
+    raise RuntimeError("CUDA not available on this host")
 dist.init_process_group("nccl")
 local_rank = int(os.environ.get("LOCAL_RANK", 0))
 torch.cuda.set_device(local_rank)
@@ -167,7 +182,7 @@ model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank]
 
 criterion = nn.CrossEntropyLoss().cuda()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
-scaler = torch.amp.GradScaler(enabled={use_amp})
+scaler = torch.cuda.amp.GradScaler(enabled={use_amp})
 
 batch_size = {batch_size}
 input_data = torch.randn(batch_size, 3, {h}, {w}, device='cuda')
@@ -177,7 +192,7 @@ warmup_iters = 10
 measure_iters = 50
 
 for i in range(warmup_iters):
-    with torch.amp.autocast('cuda', enabled={use_amp}, dtype={amp_dtype}):
+    with torch.cuda.amp.autocast(enabled={use_amp}, dtype={amp_dtype}):
         output = model(input_data)
         loss = criterion(output, target)
     scaler.scale(loss).backward()
@@ -188,7 +203,7 @@ torch.cuda.synchronize()
 
 start = time.time()
 for i in range(measure_iters):
-    with torch.amp.autocast('cuda', enabled={use_amp}, dtype={amp_dtype}):
+    with torch.cuda.amp.autocast(enabled={use_amp}, dtype={amp_dtype}):
         output = model(input_data)
         loss = criterion(output, target)
     scaler.scale(loss).backward()
@@ -203,6 +218,7 @@ throughput = total_images / elapsed
 mem = torch.cuda.max_memory_allocated() / 1e6
 
 if local_rank == 0:
+    print("DEVICE: cuda")
     print(f"THROUGHPUT: {{throughput:.2f}} imgs/s")
     print(f"GPU_MEMORY: {{mem:.0f}} MB")
     print(f"TIME_PER_STEP: {{elapsed / measure_iters * 1000:.1f}} ms")

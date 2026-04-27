@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -127,9 +127,9 @@ class InferenceTestConfig(BaseModel):
     model_path: str = ""
     precision: DataPrecision = DataPrecision.BF16
     num_gpus: int = 1
-    concurrency_levels: list[int] = Field(default_factory=lambda: [1, 4, 8, 16, 32])
+    concurrency_levels: List[int] = Field(default_factory=lambda: [1, 4, 8, 16, 32])
     num_requests: int = 400
-    input_output_pairs: list[list[int]] = Field(
+    input_output_pairs: List[List[int]] = Field(
         default_factory=lambda: [[1024, 256]],
         description="List of [input_len, output_len] pairs",
     )
@@ -141,7 +141,7 @@ class AccuracyTestConfig(BaseModel):
     test_type: AccuracyTestType
     framework: str = "opencompass"
     model_path: str = ""
-    datasets: list[str] = Field(default_factory=lambda: ["gsm8k", "mmlu"])
+    datasets: List[str] = Field(default_factory=lambda: ["gsm8k", "mmlu"])
     num_gpus: int = 8
     precision: DataPrecision = DataPrecision.INT8
     inference_backend: InferenceFramework = InferenceFramework.VLLM
@@ -152,25 +152,25 @@ class EcosystemTestConfig(BaseModel):
     framework: str = ""
     model_path: Optional[str] = None
     num_gpus: int = 1
-    extra_params: dict[str, Any] = Field(default_factory=dict)
+    extra_params: Dict[str, Any] = Field(default_factory=dict)
 
 
 class VideoCodecTestConfig(BaseModel):
     test_type: VideoCodecTestType
-    resolutions: list[str] = Field(default_factory=lambda: ["1080p", "4K"])
-    formats: list[str] = Field(default_factory=lambda: ["H.264", "H.265"])
+    resolutions: List[str] = Field(default_factory=lambda: ["1080p", "4K"])
+    formats: List[str] = Field(default_factory=lambda: ["H.264", "H.265"])
 
 
 # --------------- Results ---------------
 
 class BandwidthResult(BaseModel):
     avg_bidirectional_bandwidth_gbps: Optional[float] = None
-    per_gpu_bandwidth_gbps: list[float] = Field(default_factory=list)
-    matrix: Optional[list[list[float]]] = None
+    per_gpu_bandwidth_gbps: List[float] = Field(default_factory=list)
+    matrix: Optional[List[List[float]]] = None
 
 
 class MemoryBandwidthResult(BaseModel):
-    per_gpu_bandwidth_gbps: list[float] = Field(default_factory=list)
+    per_gpu_bandwidth_gbps: List[float] = Field(default_factory=list)
 
 
 class ComputePowerResult(BaseModel):
@@ -186,14 +186,14 @@ class PowerResult(BaseModel):
     avg_power_watts: float = 0
     max_power_watts: Optional[float] = None
     duration_minutes: int = 10
-    per_gpu_power_watts: list[float] = Field(default_factory=list)
+    per_gpu_power_watts: List[float] = Field(default_factory=list)
 
 
 class StabilityResult(BaseModel):
     passed: bool = False
     duration_hours: float = 0
-    errors: list[str] = Field(default_factory=list)
-    warnings: list[str] = Field(default_factory=list)
+    errors: List[str] = Field(default_factory=list)
+    warnings: List[str] = Field(default_factory=list)
 
 
 class TrainingResult(BaseModel):
@@ -211,25 +211,25 @@ class InferenceResult(BaseModel):
     ttft_ms: Optional[float] = None
     tpot_ms: Optional[float] = None
     max_concurrency_under_slo: Optional[int] = None
-    per_concurrency_results: list[dict[str, Any]] = Field(default_factory=list)
+    per_concurrency_results: List[Dict[str, Any]] = Field(default_factory=list)
 
 
 class AccuracyResult(BaseModel):
-    dataset_scores: dict[str, float] = Field(default_factory=dict)
+    dataset_scores: Dict[str, float] = Field(default_factory=dict)
     overall_score: Optional[float] = None
-    raw_output: dict[str, Any] = Field(default_factory=dict)
+    raw_output: Dict[str, Any] = Field(default_factory=dict)
 
 
 class EcosystemResult(BaseModel):
     passed: bool = False
     compatibility_notes: str = ""
-    performance_data: dict[str, Any] = Field(default_factory=dict)
+    performance_data: Dict[str, Any] = Field(default_factory=dict)
 
 
 class VideoCodecResult(BaseModel):
     passed: bool = False
-    encode_fps: dict[str, float] = Field(default_factory=dict)
-    decode_fps: dict[str, float] = Field(default_factory=dict)
+    encode_fps: Dict[str, float] = Field(default_factory=dict)
+    decode_fps: Dict[str, float] = Field(default_factory=dict)
 
 
 # --------------- Unified Task ---------------
@@ -238,7 +238,7 @@ class AcceleratorTestCreate(BaseModel):
     name: str
     category: TestCategory
     test_type: str
-    config: dict[str, Any] = Field(default_factory=dict)
+    config: Dict[str, Any] = Field(default_factory=dict)
     num_gpus: int = Field(default=1, ge=1, le=64)
     description: Optional[str] = None
     execution: ExecutionSpec = Field(default_factory=ExecutionSpec)
@@ -247,13 +247,13 @@ class AcceleratorTestCreate(BaseModel):
 class AcceleratorTestResult(BaseModel):
     category: TestCategory
     test_type: str
-    data: dict[str, Any] = Field(default_factory=dict)
+    data: Dict[str, Any] = Field(default_factory=dict)
     summary: str = ""
 
 
 # --------------- Predefined test case catalog ---------------
 
-TEST_CASE_CATALOG: list[dict[str, Any]] = [
+TEST_CASE_CATALOG: List[Dict[str, Any]] = [
     {
         "category": "chip_basic",
         "test_type": "inter_chip_bandwidth",

@@ -1,14 +1,26 @@
 """SSH/SFTP: subprocess (密钥) 或 paramiko（密码）。"""
 from __future__ import annotations
 
+import shlex
 import stat
 import subprocess
+import time
 from pathlib import Path
 from typing import Callable, Optional
 
 import paramiko
 
 from .ssh_config import SshTarget
+
+
+def _remote_login_shell_wrap(remote_cmd: str) -> str:
+    """用登录 shell 执行远程命令，加载 ~/.profile / ~/.bash_profile 中的 PATH。
+
+    Paramiko 与 ssh 非交互执行默认不读 .bashrc，常见现象：交互 SSH 里有 python3，
+    自动化执行报 python3: command not found。
+    """
+    return f"bash -lc {shlex.quote(remote_cmd)}"
+
 
 class SSHRunResult:
     __slots__ = ("returncode", "stdout", "stderr")
@@ -58,9 +70,10 @@ def connect(t: SshTarget) -> paramiko.SSHClient:
 
 
 def ssh_run_bash(t: SshTarget, bash_line: str, timeout: Optional[float] = None) -> SSHRunResult:
+    wrapped = _remote_login_shell_wrap(bash_line)
     if _use_paramiko(t):
-        return _paramiko_exec(t, bash_line, timeout)
-    cmd = _ssh_subprocess_base(t) + [f"{t.user}@{t.host}", bash_line]
+        return _paramiko_exec(t, wrapped, timeout)
+    cmd = _ssh_subprocess_base(t) + [f"{t.user}@{t.host}", wrapped]
     r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
     return SSHRunResult(r.returncode, r.stdout or "", r.stderr or "")
 
@@ -69,6 +82,16 @@ def _paramiko_exec(t: SshTarget, command: str, timeout: Optional[float]) -> SSHR
     client = connect(t)
     try:
         stdin, stdout, stderr = client.exec_command(command, timeout=timeout)
+        if timeout is not None:
+            deadline = time.time() + float(timeout)
+            while not stdout.channel.exit_status_ready():
+                if time.time() >= deadline:
+                    try:
+                        stdout.channel.close()
+                    except Exception:
+                        pass
+                    return SSHRunResult(124, "", f"remote command timeout after {timeout}s")
+                time.sleep(0.2)
         out = stdout.read().decode("utf-8", errors="replace")
         err = stderr.read().decode("utf-8", errors="replace")
         code = stdout.channel.recv_exit_status()
@@ -166,16 +189,17 @@ def run_streaming_command(
     timeout: Optional[float] = None,
 ) -> int:
     """在远程执行长命令，按行回调 stdout/stderr 合并流。返回 exit status。"""
+    wrapped = _remote_login_shell_wrap(remote_bash_inner)
     if _use_paramiko(t):
         client = connect(t)
         try:
-            _stdin, stdout, _stderr = client.exec_command(remote_bash_inner, get_pty=True)
+            _stdin, stdout, _stderr = client.exec_command(wrapped, get_pty=True)
             for line in stdout:
                 log_callback(line.rstrip())
             return int(stdout.channel.recv_exit_status())
         finally:
             client.close()
-    cmd = _ssh_subprocess_base(t) + [f"{t.user}@{t.host}", remote_bash_inner]
+    cmd = _ssh_subprocess_base(t) + [f"{t.user}@{t.host}", wrapped]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     assert proc.stdout
     try:

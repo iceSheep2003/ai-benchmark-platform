@@ -5,7 +5,14 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import system, tasks, test_cases
+from .routers import (
+    accelerator_assets,
+    accelerator_comparisons,
+    accelerator_results,
+    system,
+    tasks,
+    test_cases,
+)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 
@@ -22,6 +29,9 @@ app.add_middleware(
 app.include_router(tasks.router)
 app.include_router(system.router)
 app.include_router(test_cases.router)
+app.include_router(accelerator_assets.router)
+app.include_router(accelerator_results.router)
+app.include_router(accelerator_comparisons.router)
 
 
 @app.get("/health")

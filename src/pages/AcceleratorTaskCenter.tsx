@@ -3,7 +3,7 @@ import { Table, Tag, Button, Space, Input, Select, message, Modal, Card, Row, Co
 import type { ColumnsType } from 'antd/es/table';
 import {
   EyeOutlined, StopOutlined, ThunderboltOutlined, ApiOutlined,
-  HeatMapOutlined, SafetyOutlined, PlayCircleOutlined, DeleteOutlined,
+  HeatMapOutlined, SafetyOutlined, DeleteOutlined,
   ExperimentOutlined, RocketOutlined, AimOutlined, AppstoreOutlined,
   VideoCameraOutlined, PlusOutlined, ReloadOutlined,
 } from '@ant-design/icons';
@@ -116,6 +116,9 @@ const AcceleratorTaskCenter: React.FC = () => {
           {r.status === 'RUNNING' && (
             <Button danger size="small" icon={<StopOutlined />} onClick={() => handleOcCancel(r.id)}>停止</Button>
           )}
+          {r.status === 'FAILED' && (
+            <Button size="small" icon={<ReloadOutlined />} onClick={() => handleOcRetry(r)}>重新测试</Button>
+          )}
           {['SUCCESS', 'FAILED', 'CANCELLED', 'PENDING'].includes(r.status) && (
             <Button danger size="small" icon={<DeleteOutlined />} onClick={() => handleOcDelete(r.id)}>删除</Button>
           )}
@@ -141,6 +144,9 @@ const AcceleratorTaskCenter: React.FC = () => {
           {r.status === 'RUNNING' && (
             <Button danger size="small" icon={<StopOutlined />} onClick={() => handleTestCancel(r.id)}>停止</Button>
           )}
+          {r.status === 'FAILED' && (
+            <Button size="small" icon={<ReloadOutlined />} onClick={() => handleTestRetry(r)}>重新测试</Button>
+          )}
           {['SUCCESS', 'FAILED', 'CANCELLED', 'PENDING'].includes(r.status) && (
             <Button danger size="small" icon={<DeleteOutlined />} onClick={() => handleTestDelete(r.id)}>删除</Button>
           )}
@@ -162,6 +168,27 @@ const AcceleratorTaskCenter: React.FC = () => {
       onOk: async () => { await acceleratorTaskApi.delete(id); message.success('已删除'); fetchOcTasks(); },
     });
   };
+  const handleOcRetry = async (task: TaskResponse) => {
+    try {
+      await acceleratorTaskApi.create({
+        name: `${task.name}-重试`,
+        model_path: task.model_path,
+        datasets: task.datasets,
+        backend: task.backend,
+        num_gpus: task.num_gpus,
+        batch_size: task.batch_size,
+        max_out_len: task.max_out_len,
+        priority: task.priority || 'normal',
+        execution: task.execution_mode
+          ? { mode: task.execution_mode, target_id: task.ssh_target_id || undefined }
+          : undefined,
+      });
+      message.success('已创建重试任务');
+      fetchOcTasks();
+    } catch {
+      message.error('重试创建失败');
+    }
+  };
   const handleTestCancel = async (id: string) => {
     Modal.confirm({
       title: '确认停止', content: `确定要停止任务 ${id}？`,
@@ -173,6 +200,25 @@ const AcceleratorTaskCenter: React.FC = () => {
       title: '确认删除', content: `删除后无法恢复，确定？`,
       onOk: async () => { await testCaseApi.delete(id); message.success('已删除'); fetchTestTasks(activeTab); },
     });
+  };
+  const handleTestRetry = async (task: TestTaskResponse) => {
+    try {
+      await testCaseApi.create({
+        name: `${task.name}-重试`,
+        category: task.category as TestCategory,
+        test_type: task.test_type,
+        config: task.config || {},
+        num_gpus: task.num_gpus,
+        description: task.description || undefined,
+        execution: task.execution_mode
+          ? { mode: task.execution_mode, target_id: task.ssh_target_id || undefined }
+          : undefined,
+      });
+      message.success('已创建重试任务');
+      fetchTestTasks(activeTab);
+    } catch {
+      message.error('重试创建失败');
+    }
   };
 
   /* ---------- 统计 ---------- */

@@ -29,7 +29,10 @@ def _run_test_case(request_path: Path) -> int:
     task_id = data["task_id"]
     response_path = request_path.parent / f"{task_id}.response.json"
     req_raw = data["request"]
-    req = AcceleratorTestCreate.model_validate(req_raw)
+    if hasattr(AcceleratorTestCreate, "model_validate"):
+        req = AcceleratorTestCreate.model_validate(req_raw)
+    else:
+        req = AcceleratorTestCreate.parse_obj(req_raw)
 
     project_root = Path.cwd()
     work_dir = (project_root / "outputs" / "tests" / task_id).as_posix()

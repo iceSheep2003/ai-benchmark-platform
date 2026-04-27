@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import threading
+import json
 from datetime import datetime
 from typing import Any, Optional
 from uuid import uuid4
@@ -8,8 +8,8 @@ from uuid import uuid4
 from ..schemas.execution import ExecutionMode
 from ..schemas.task import TaskStatus
 from ..schemas.test_case import AcceleratorTestCreate, AcceleratorTestResult, TestCategory
+from .db import execute, fetchall, fetchone
 
-_lock = threading.Lock()
 
 
 class TestTask:
@@ -61,20 +61,67 @@ class TestTask:
         }
 
 
-_test_tasks: dict[str, TestTask] = {}
+def _dt(v: Optional[str]) -> Optional[datetime]:
+    return datetime.fromisoformat(v) if v else None
+
+
+def _row_to_test_task(row) -> TestTask:
+    req = AcceleratorTestCreate(
+        name=row["name"],
+        category=TestCategory(row["category"]),
+        test_type=row["test_type"],
+        config=json.loads(row["config_json"] or "{}"),
+        num_gpus=row["num_gpus"],
+        description=row["description"],
+        execution={
+            "mode": row["execution_mode"],
+            "target_id": row["ssh_target_id"],
+        },
+    )
+    t = TestTask(task_id=row["id"], req=req)
+    t.status = TaskStatus(row["status"])
+    t.created_at = datetime.fromisoformat(row["created_at"])
+    t.started_at = _dt(row["started_at"])
+    t.completed_at = _dt(row["completed_at"])
+    t.error_message = row["error_message"]
+    t.log_tail = json.loads(row["log_tail_json"] or "[]")
+    t.result = AcceleratorTestResult.model_validate(json.loads(row["result_json"])) if row["result_json"] else None
+    return t
 
 
 def create_test_task(req: AcceleratorTestCreate) -> TestTask:
     task_id = f"test-{uuid4().hex[:12]}"
     task = TestTask(task_id=task_id, req=req)
-    with _lock:
-        _test_tasks[task_id] = task
+    execute(
+        """
+        INSERT INTO test_tasks(
+            id, name, category, test_type, config_json, num_gpus, description,
+            status, created_at, error_message, result_json, log_tail_json, execution_mode, ssh_target_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            task.id,
+            task.name,
+            task.category.value,
+            task.test_type,
+            json.dumps(task.config, ensure_ascii=False),
+            task.num_gpus,
+            task.description,
+            task.status.value,
+            task.created_at.isoformat(),
+            task.error_message,
+            None,
+            "[]",
+            task.execution_mode.value,
+            task.ssh_target_id,
+        ),
+    )
     return task
 
 
 def get_test_task(task_id: str) -> Optional[TestTask]:
-    with _lock:
-        return _test_tasks.get(task_id)
+    row = fetchone("SELECT * FROM test_tasks WHERE id = ?", (task_id,))
+    return _row_to_test_task(row) if row else None
 
 
 def list_test_tasks(
@@ -83,17 +130,28 @@ def list_test_tasks(
     limit: int = 50,
     offset: int = 0,
 ) -> tuple[list[TestTask], int]:
-    with _lock:
-        items = list(_test_tasks.values())
-
+    where_parts: list[str] = []
+    params: list[Any] = []
     if category:
-        items = [t for t in items if t.category == category]
+        where_parts.append("category = ?")
+        params.append(category.value)
     if status:
-        items = [t for t in items if t.status == status]
+        where_parts.append("status = ?")
+        params.append(status.value)
+    where = f"WHERE {' AND '.join(where_parts)}" if where_parts else ""
 
-    items.sort(key=lambda t: t.created_at, reverse=True)
-    total = len(items)
-    return items[offset: offset + limit], total
+    total_row = fetchone(f"SELECT COUNT(*) AS c FROM test_tasks {where}", tuple(params))
+    total = int(total_row["c"]) if total_row else 0
+    rows = fetchall(
+        f"""
+        SELECT * FROM test_tasks
+        {where}
+        ORDER BY created_at DESC
+        LIMIT ? OFFSET ?
+        """,
+        tuple(params + [limit, offset]),
+    )
+    return [_row_to_test_task(r) for r in rows], total
 
 
 def update_test_task_status(
@@ -102,39 +160,57 @@ def update_test_task_status(
     *,
     error_message: Optional[str] = None,
 ) -> Optional[TestTask]:
-    with _lock:
-        task = _test_tasks.get(task_id)
-        if not task:
-            return None
-        task.status = status
-        if status == TaskStatus.RUNNING and task.started_at is None:
-            task.started_at = datetime.utcnow()
-        if status in (TaskStatus.SUCCESS, TaskStatus.FAILED, TaskStatus.CANCELLED):
-            task.completed_at = datetime.utcnow()
-        if error_message:
-            task.error_message = error_message
-        return task
+    task = get_test_task(task_id)
+    if not task:
+        return None
+    started_at = task.started_at.isoformat() if task.started_at else None
+    completed_at = task.completed_at.isoformat() if task.completed_at else None
+    if status == TaskStatus.RUNNING and started_at is None:
+        started_at = datetime.utcnow().isoformat()
+    if status in (TaskStatus.SUCCESS, TaskStatus.FAILED, TaskStatus.CANCELLED):
+        completed_at = datetime.utcnow().isoformat()
+    em = error_message or task.error_message
+    execute(
+        """
+        UPDATE test_tasks
+        SET status = ?, started_at = ?, completed_at = ?, error_message = ?
+        WHERE id = ?
+        """,
+        (status.value, started_at, completed_at, em, task_id),
+    )
+    return get_test_task(task_id)
 
 
 def update_test_task_result(task_id: str, result: AcceleratorTestResult) -> Optional[TestTask]:
-    with _lock:
-        task = _test_tasks.get(task_id)
-        if not task:
-            return None
-        task.result = result
-        return task
+    task = get_test_task(task_id)
+    if not task:
+        return None
+    execute(
+        "UPDATE test_tasks SET result_json = ? WHERE id = ?",
+        (result.model_dump_json(), task_id),
+    )
+    try:
+        from .accelerator_store import record_test_result
+
+        record_test_result(task, result)
+    except Exception:
+        pass
+    return get_test_task(task_id)
 
 
 def append_test_log(task_id: str, lines: list[str], max_lines: int = 200):
-    with _lock:
-        task = _test_tasks.get(task_id)
-        if not task:
-            return
-        task.log_tail.extend(lines)
-        if len(task.log_tail) > max_lines:
-            task.log_tail = task.log_tail[-max_lines:]
+    task = get_test_task(task_id)
+    if not task:
+        return
+    merged = task.log_tail + lines
+    if len(merged) > max_lines:
+        merged = merged[-max_lines:]
+    execute(
+        "UPDATE test_tasks SET log_tail_json = ? WHERE id = ?",
+        (json.dumps(merged, ensure_ascii=False), task_id),
+    )
 
 
 def delete_test_task(task_id: str) -> bool:
-    with _lock:
-        return _test_tasks.pop(task_id, None) is not None
+    cur = execute("DELETE FROM test_tasks WHERE id = ?", (task_id,))
+    return cur.rowcount > 0

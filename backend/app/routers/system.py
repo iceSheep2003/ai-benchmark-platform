@@ -36,16 +36,7 @@ def put_ssh_targets_config(body: SshTargetsSaveRequest):
     if len(ids) != len(set(ids)):
         raise HTTPException(status_code=400, detail="Duplicate target id")
 
-    old_passwords: dict[str, str] = {}
-    p = ssh_config.data_file_path()
-    if p.is_file():
-        try:
-            prev = json.loads(p.read_text(encoding="utf-8"))
-            for row in prev:
-                if isinstance(row, dict) and row.get("id") and row.get("password"):
-                    old_passwords[str(row["id"])] = str(row["password"])
-        except Exception:
-            pass
+    old_passwords = ssh_config.get_saved_password_map()
 
     rows: list[dict] = []
     for it in body.items:
